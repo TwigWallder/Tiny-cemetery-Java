@@ -1,5 +1,7 @@
 package main;
-
+/*
+ * @author TwigWallder
+ */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -13,12 +15,16 @@ public class Main extends JPanel implements Runnable {
     private char[][] grid;
     private final ArrayList<Monster> monsters = new ArrayList<>();
 
+    // Stats player
     private int playerX = 5;
     private int playerY = 5;
     private static int maxHealth = 100;
     private static int maxMana = 100;
     private int health = maxHealth;
     private int mana = maxMana;
+    private int level = 1;
+    private int xp = 0;
+    private int nextXp = 100;
     private ArrayList<String> inventory;
 
     private boolean running = true;
@@ -28,8 +34,6 @@ public class Main extends JPanel implements Runnable {
     private boolean isInvincible = false;
     private int invincibilityTimer = 0;
     private static final int INVINCIBILITY_DURATION = 30; // Duration of invincibility in update cycles
-
-    private int score = 0; // Score variable
 
     public Main() {
         init();
@@ -70,7 +74,7 @@ public class Main extends JPanel implements Runnable {
 
     private void spawnMonsters() {
         Random rand = new Random();
-        for (int i = 0; i < 5; i++) { // Spawns 5 monsters
+        for (int i = 0; i < 0; i++) { // Spawns 5 monsters
             int x = rand.nextInt(width - 2) + 1;
             int y = rand.nextInt(height - 2) + 1;
             monsters.add(new Monster(x, y));
@@ -81,6 +85,7 @@ public class Main extends JPanel implements Runnable {
         if (gameOver) return; // Skip updates if game is over
 
         fillEmptyGrid();
+        levelUpSystem();
         regenerationHpMp();
         for (Monster monster : monsters) {
             monster.moveTowardsPlayer(playerX, playerY);
@@ -147,6 +152,15 @@ public class Main extends JPanel implements Runnable {
             g.drawString("GAME OVER", getWidth() / 2 - 100, getHeight() / 2);
         }
     }
+    
+    private void levelUpSystem() {
+    	if(xp >= nextXp) {
+    		xp = 0;
+    		level ++;
+    		nextXp *= 1.2;
+    		System.out.println("Next xp: "+nextXp);
+    	}
+    }
 
     int timerHealth = 0;
     int timerMana = 0;
@@ -178,28 +192,33 @@ public class Main extends JPanel implements Runnable {
         int uiStartX = width * 20 + 100;
         int uiStartY = 40;
 
-        g.setColor(Color.RED);
-        g.drawString("HP: ", uiStartX, uiStartY);
-        g.fillRect(uiStartX + 50, uiStartY - 15, health * 2, 20);
-        g.setColor(Color.WHITE);
-        g.drawRect(uiStartX + 50, uiStartY - 15, 200, 20);
+       // barre(uiStartX, uiStartY, "HP: ", Color.RED, health, g);
 
-        g.setColor(Color.BLUE);
-        g.drawString("MP: ", uiStartX, uiStartY + 40);
-        g.fillRect(uiStartX + 50, uiStartY + 25, mana * 2, 20);
-        g.setColor(Color.WHITE);
-        g.drawRect(uiStartX + 50, uiStartY + 25, 200, 20);
+       // barre(uiStartX, uiStartY+ 30, "MP: ", Color.BLUE, mana, g);
 
+        // INVENTORY
         g.setColor(Color.WHITE);
-        g.drawString("|Inventory|", uiStartX + 95, uiStartY + 80);
+        g.drawString("|Inventory|", uiStartX + 95, uiStartY + 150);
         for (int i = 0; i < inventory.size(); i++) {
-            g.drawString(inventory.get(i), uiStartX , uiStartY + 110 + (i * 20));
+            g.drawString(inventory.get(i), uiStartX , uiStartY + 160 + (i * 20));
         }
-        g.drawRect(uiStartX - 5, uiStartY + 60, 335, 200);
+        g.drawRect(uiStartX - 5, uiStartY + 130, 335, 200);
 
-        // Display the score
-        g.setColor(Color.YELLOW);
-        g.drawString("Score: " + score, uiStartX, uiStartY + 300);
+        // Display the level & exp
+        g.setColor(Color.GREEN);
+        g.drawString("Level: " + level, uiStartX, uiStartY + 110);
+        
+       barre(uiStartX, uiStartY+60, "XP: ", Color.yellow, xp, g);
+    }
+    
+    private void barre(int x, int y, String type, Color color, int typeVar, Graphics g) {
+    	 g.setColor(color);
+         g.drawString(type, x, y+15);
+         g.fillRect(x + 50, y,  typeVar*(200/nextXp) , 20);
+         System.out.println("barre: " +typeVar*(200/nextXp));
+         System.out.println("xp: " +xp);
+         g.setColor(Color.WHITE);
+         g.drawRect(x + 50, y, 200, 20);
     }
 
     @Override
@@ -260,11 +279,18 @@ public class Main extends JPanel implements Runnable {
             if (key == KeyEvent.VK_M) {
                 mana = Math.max(mana - 5, 0);
             }
+            if (key == KeyEvent.VK_X) {
+                xp = Math.max(xp + 5, 0);
+            }
             if (key == KeyEvent.VK_I) {
                 inventory.add("Objet " + (inventory.size() + 1));
             }
             if (key == KeyEvent.VK_A) {
                 attackMonster();
+                mana -= 5;
+                if(mana <= 0) {
+                	mana = 0;
+                }
             }
         }
     }
@@ -274,7 +300,7 @@ public class Main extends JPanel implements Runnable {
             Monster monster = monsters.get(i);
             if (Math.abs(monster.x - playerX) <= 1 && Math.abs(monster.y - playerY) <= 1) {
                 monsters.remove(i); // Remove the defeated monster
-                score += 10; // Increase score
+                xp += 10; // Increase score
                 return; // Exit the method after attacking one monster
             }
         }
