@@ -32,12 +32,13 @@ public class Main extends JPanel implements Runnable {
     private int attributPoint = 0;
 
     private boolean running = true;
-    private boolean gameOver = false; // Flag to indicate game over
+    private boolean gameOver = false; 
 
     // Invincibility variables
     private boolean isInvincible = false;
     private int invincibilityTimer = 0;
-    private static final int INVINCIBILITY_DURATION = 30; // Duration of invincibility in update cycles
+    // Duration of invincibility in update cycles
+    private static final int INVINCIBILITY_DURATION = 30; 
 
     public Main() {
         init();
@@ -73,7 +74,7 @@ public class Main extends JPanel implements Runnable {
 
     private void spawnMonsters() {
         Random rand = new Random();
-        for (int i = 0; i < 0; i++) { 
+        for (int i = 0; i < 7; i++) { 
             int x = rand.nextInt(width - 2) + 1;
             int y = rand.nextInt(height - 2) + 1;
             monsters.add(new Monster(x, y));
@@ -81,12 +82,14 @@ public class Main extends JPanel implements Runnable {
     }
 
     public void update() {
+    	int numMonster = 0 ;
         if (gameOver) return; 
 
         fillEmptyGrid();
         levelUpSystem();
         regenerationHpMp();
         for (Monster monster : monsters) {
+        	numMonster ++;
             monster.moveTowardsPlayer(playerX, playerY);
             if (!isInvincible && monster.x == playerX && monster.y == playerY) {
                 health = Math.max(health - 5, 0); 
@@ -98,6 +101,9 @@ public class Main extends JPanel implements Runnable {
                 }
             }
             grid[monster.y][monster.x] = 'M';
+        }
+        if (numMonster == 00) {
+        	spawnMonsters();
         }
         grid[playerY][playerX] = '@';
 
@@ -190,6 +196,7 @@ public class Main extends JPanel implements Runnable {
     }
 
     private void drawUI(Graphics g) {
+        g.setFont(new Font("Monospaced", Font.BOLD, 20));
         int uiStartX = width * 20 + 100;
         int uiStartY = 40;
 
@@ -213,7 +220,18 @@ public class Main extends JPanel implements Runnable {
        g.drawString("Attribut Point: "+ attributPoint+"", uiStartX, uiStartY + 300);
        g.setColor(Color.white);
        g.drawRect(uiStartX - 5, uiStartY+150, 300, 165);
+       // stats
        g.drawRect(uiStartX - 5, uiStartY-5, 300, 130);
+       
+       // game è_è
+       if(isInvincible) {
+           g.setColor(Color.RED);
+       } else {
+           g.setColor(Color.DARK_GRAY); 
+       }
+       g.drawRect(45, 1, 800, 605);
+       g.drawRect(46, 2, 800, 605);
+       g.drawRect(47, 3, 800, 605);
        
        // Display Spell
        g.setColor(Color.lightGray);
@@ -235,11 +253,9 @@ public class Main extends JPanel implements Runnable {
          g.drawRect(x + 50, y, 200, 20);
 
     	 // background
-         g.setFont(new Font("Monospaced", Font.BOLD, 20));
          g.setColor(Color.black);
     	 g.drawString(val+"/"+valMax, x+ 100, y + 18);
     	 
-         g.setFont(new Font("Monospaced", Font.BOLD, 20));
          g.setColor(Color.lightGray);
     	 g.drawString(val+"/"+valMax, x+ 100, y + 16);
     	 
