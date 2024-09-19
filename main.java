@@ -18,14 +18,18 @@ public class Main extends JPanel implements Runnable {
     // Stats player
     private int playerX = 5;
     private int playerY = 5;
-    private static int maxHealth = 100;
-    private static int maxMana = 100;
+    private int maxHealth = 100;
+    private int maxMana = 100;
     private int health = maxHealth;
     private int mana = maxMana;
     private int level = 1;
     private int xp = 0;
     private int nextXp = 100;
-    private ArrayList<String> inventory;
+    private int attack = 1;
+    private int defense = 1;
+    private int vitality = 1;
+    private int wisdom = 1;
+    private int attributPoint = 0;
 
     private boolean running = true;
     private boolean gameOver = false; // Flag to indicate game over
@@ -49,11 +53,6 @@ public class Main extends JPanel implements Runnable {
         grid = new char[height][width];
         fillEmptyGrid();
         spawnMonsters();
-
-        inventory = new ArrayList<>();
-        inventory.add("Potion");
-        inventory.add("Épée");
-        inventory.add("Bouclier");
     }
 
     public void fillEmptyGrid() {
@@ -74,7 +73,7 @@ public class Main extends JPanel implements Runnable {
 
     private void spawnMonsters() {
         Random rand = new Random();
-        for (int i = 0; i < 0; i++) { // Spawns 5 monsters
+        for (int i = 0; i < 0; i++) { 
             int x = rand.nextInt(width - 2) + 1;
             int y = rand.nextInt(height - 2) + 1;
             monsters.add(new Monster(x, y));
@@ -82,7 +81,7 @@ public class Main extends JPanel implements Runnable {
     }
 
     public void update() {
-        if (gameOver) return; // Skip updates if game is over
+        if (gameOver) return; 
 
         fillEmptyGrid();
         levelUpSystem();
@@ -90,19 +89,18 @@ public class Main extends JPanel implements Runnable {
         for (Monster monster : monsters) {
             monster.moveTowardsPlayer(playerX, playerY);
             if (!isInvincible && monster.x == playerX && monster.y == playerY) {
-                health = Math.max(health - 5, 0); // Take damage from monster
-                isInvincible = true; // Activate invincibility
-                invincibilityTimer = INVINCIBILITY_DURATION; // Set the duration of invincibility
+                health = Math.max(health - 5, 0); 
+                isInvincible = true;
+                invincibilityTimer = INVINCIBILITY_DURATION; 
 
-                if (health == 0) { // Check if health is 0
-                    gameOver = true; // Set game over flag
+                if (health == 0) {
+                    gameOver = true;
                 }
             }
             grid[monster.y][monster.x] = 'M';
         }
         grid[playerY][playerX] = '@';
 
-        // Handle invincibility timer
         if (isInvincible) {
             invincibilityTimer--;
             if (invincibilityTimer <= 0) {
@@ -131,7 +129,6 @@ public class Main extends JPanel implements Runnable {
                         g.setColor(Color.GREEN);
                         break;
                     case '@':
-                        // Set color based on invincibility
                         g.setColor(isInvincible ? Color.WHITE : Color.YELLOW);
                         break;
                     case 'M':
@@ -144,7 +141,7 @@ public class Main extends JPanel implements Runnable {
 
         drawUI(g);
 
-        if (gameOver) { // Display game over message
+        if (gameOver) {
             g.setColor(Color.black);
             g.fillRect(0, 0, width * 50, height*50);
             g.setColor(Color.RED);
@@ -157,8 +154,12 @@ public class Main extends JPanel implements Runnable {
     	if(xp >= nextXp) {
     		xp = 0;
     		level ++;
-    		nextXp *= 1.2;
-    		System.out.println("Next xp: "+nextXp);
+    		nextXp *= 1.5;
+    		maxHealth *= 1.2;
+    		maxMana *= 1.3;
+    		health = maxHealth;
+    		mana = maxMana;
+    		attributPoint ++;
     	}
     }
 
@@ -168,7 +169,7 @@ public class Main extends JPanel implements Runnable {
         if (health != maxHealth) {
             timerHealth++;
             if (timerHealth >= 50) {
-                health += 1;
+                health += 1*vitality;
                 if (health >= maxHealth) {
                     health = maxHealth;
                 }
@@ -179,7 +180,7 @@ public class Main extends JPanel implements Runnable {
         if (mana != maxMana) {
             timerMana++;
             if (timerMana >= 25) {
-                mana += 1;
+                mana += 1*wisdom;
                 if (mana >= maxMana) {
                     mana = maxMana;
                 }
@@ -192,33 +193,56 @@ public class Main extends JPanel implements Runnable {
         int uiStartX = width * 20 + 100;
         int uiStartY = 40;
 
-       // barre(uiStartX, uiStartY, "HP: ", Color.RED, health, g);
+        barre(uiStartX, uiStartY, "HP: ", Color.RED, health , maxHealth, g);
 
-       // barre(uiStartX, uiStartY+ 30, "MP: ", Color.BLUE, mana, g);
+        barre(uiStartX, uiStartY+ 30, "MP: ", Color.cyan, mana, maxMana, g);
 
-        // INVENTORY
-        g.setColor(Color.WHITE);
-        g.drawString("|Inventory|", uiStartX + 95, uiStartY + 150);
-        for (int i = 0; i < inventory.size(); i++) {
-            g.drawString(inventory.get(i), uiStartX , uiStartY + 160 + (i * 20));
-        }
-        g.drawRect(uiStartX - 5, uiStartY + 130, 335, 200);
-
-        // Display the level & exp
         g.setColor(Color.GREEN);
         g.drawString("Level: " + level, uiStartX, uiStartY + 110);
         
-       barre(uiStartX, uiStartY+60, "XP: ", Color.yellow, xp, g);
+       barre(uiStartX, uiStartY+60, "XP: ", Color.yellow, xp, nextXp, g);
+       
+       // Display stats       
+       g.setColor(Color.getHSBColor(100,100,100));
+       g.drawString("Status:  Lvl:  Input:", uiStartX, uiStartY + 170);
+       g.drawString("Attack:   "+ attack+ "     [1]", uiStartX, uiStartY + 200);
+       g.drawString("Defense:  "+ defense+ "     [2]", uiStartX, uiStartY + 220);
+       g.drawString("vitality: "+ vitality+ "     [3]", uiStartX, uiStartY + 240);
+       g.drawString("wisdom:   "+ wisdom+ "     [4]", uiStartX, uiStartY + 260);
+       g.drawString("========================", uiStartX, uiStartY + 285);
+       g.drawString("Attribut Point: "+ attributPoint+"", uiStartX, uiStartY + 300);
+       g.setColor(Color.white);
+       g.drawRect(uiStartX - 5, uiStartY+150, 300, 165);
+       g.drawRect(uiStartX - 5, uiStartY-5, 300, 130);
+       
+       // Display Spell
+       g.setColor(Color.lightGray);
+       g.drawString("Spell: Cost: Input:", uiStartX, uiStartY + 370);
+       g.drawString("Charge   (5)  [A]", uiStartX, uiStartY + 400);
+       g.drawString("FireBall (20) [R]", uiStartX, uiStartY + 420);
+       g.drawString("Ice Pick (25) [I]", uiStartX, uiStartY + 440);
+       g.drawString("Teleport (10) [T]", uiStartX, uiStartY + 460);
+       g.setColor(Color.white);
+       g.drawRect(uiStartX - 5, uiStartY+350, 300, 120);
     }
     
-    private void barre(int x, int y, String type, Color color, int typeVar, Graphics g) {
+    private void barre(int x, int y, String type, Color color, int val, int valMax, Graphics g) {
+    	 
     	 g.setColor(color);
          g.drawString(type, x, y+15);
-         g.fillRect(x + 50, y,  typeVar*(200/nextXp) , 20);
-         System.out.println("barre: " +typeVar*(200/nextXp));
-         System.out.println("xp: " +xp);
+         g.fillRect(x + 50, y,  val*200/valMax, 20);
          g.setColor(Color.WHITE);
          g.drawRect(x + 50, y, 200, 20);
+
+    	 // background
+         g.setFont(new Font("Monospaced", Font.BOLD, 20));
+         g.setColor(Color.black);
+    	 g.drawString(val+"/"+valMax, x+ 100, y + 18);
+    	 
+         g.setFont(new Font("Monospaced", Font.BOLD, 20));
+         g.setColor(Color.lightGray);
+    	 g.drawString(val+"/"+valMax, x+ 100, y + 16);
+    	 
     }
 
     @Override
@@ -234,13 +258,13 @@ public class Main extends JPanel implements Runnable {
             repaint();
 
             try {
-                Thread.sleep(20); // Increase the sleep time to slow down the update rate
+                Thread.sleep(20); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             if (gameOver) {
-                break; // Exit game loop if game is over
+                break; 
             }
         }
     }
@@ -248,7 +272,7 @@ public class Main extends JPanel implements Runnable {
     private class TAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            if (gameOver) return; // Skip key events if game is over
+            if (gameOver) return; 
 
             int key = e.getKeyCode();
 
@@ -268,22 +292,20 @@ public class Main extends JPanel implements Runnable {
             if (key == KeyEvent.VK_H) {
                 if (!isInvincible) {
                     health = Math.max(health - 10, 0);
-                    isInvincible = true; // Activate invincibility
-                    invincibilityTimer = INVINCIBILITY_DURATION; // Set the duration of invincibility
+                    isInvincible = true; 
+                    invincibilityTimer = INVINCIBILITY_DURATION; 
 
-                    if (health == 0) { // Check if health is 0
-                        gameOver = true; // Set game over flag
+                    if (health == 0) { 
+                        gameOver = true; 
                     }
                 }
             }
+            
             if (key == KeyEvent.VK_M) {
                 mana = Math.max(mana - 5, 0);
             }
             if (key == KeyEvent.VK_X) {
                 xp = Math.max(xp + 5, 0);
-            }
-            if (key == KeyEvent.VK_I) {
-                inventory.add("Objet " + (inventory.size() + 1));
             }
             if (key == KeyEvent.VK_A) {
                 attackMonster();
@@ -292,6 +314,27 @@ public class Main extends JPanel implements Runnable {
                 	mana = 0;
                 }
             }
+            if(attributPoint > 0) {
+            	switch(key) {
+            	case KeyEvent.VK_1:
+            		attack++;
+            		attributPoint --;
+            		break;
+            	case KeyEvent.VK_2:
+            		defense++;
+            		attributPoint --;
+            		break;
+            	case KeyEvent.VK_3:
+            		vitality++;
+            		attributPoint --;
+            		break;
+            	case KeyEvent.VK_4:
+            		wisdom++;
+            		attributPoint --;
+            		break;
+            	}
+            	
+            }
         }
     }
 
@@ -299,9 +342,9 @@ public class Main extends JPanel implements Runnable {
         for (int i = 0; i < monsters.size(); i++) {
             Monster monster = monsters.get(i);
             if (Math.abs(monster.x - playerX) <= 1 && Math.abs(monster.y - playerY) <= 1) {
-                monsters.remove(i); // Remove the defeated monster
-                xp += 10; // Increase score
-                return; // Exit the method after attacking one monster
+                monsters.remove(i);
+                xp += 10;
+                return; 
             }
         }
     }
@@ -325,7 +368,7 @@ public class Main extends JPanel implements Runnable {
     private class Monster {
         int x, y;
         private int moveTimer = 0;
-        private final int moveInterval = 50; // Interval in milliseconds
+        private final int moveInterval = 50;
 
         Monster(int x, int y) {
             this.x = x;
