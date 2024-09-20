@@ -1,15 +1,17 @@
 package entity;
 
-import java.util.Random;
+import main.Main;
 
 public class Monster {
 	public int x, y;
     public int moveTimer = 0;
     public final int moveInterval = 50;
+    Main m;
 
-    public Monster(int x, int y) {
+    public Monster(int x, int y, Main m) {
         this.x = x;
         this.y = y;
+        this.m = m;
     }
 
     public void moveTowardsPlayer(int playerX, int playerY, char[][] grid) {
@@ -31,5 +33,12 @@ public class Monster {
         } else if (y > playerY+1 && grid[y - 1][x] != '#') {
             y--;
         }
+    }
+    
+    public void damagePlayer() {
+    	int result = m.monsterDamage - m.defense;
+    	if(result > 0) {
+    		m.health = Math.max(m.health - (result), 0);
+    	}
     }
 }

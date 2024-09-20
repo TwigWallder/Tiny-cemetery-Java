@@ -3,11 +3,15 @@ package main;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import entity.Player;
+
 public class InputHandler extends KeyAdapter{
 	Main m;
+	Player player;
 	
-	public InputHandler(Main m) {
+	public InputHandler(Main m, Player player) {
 		this.m = m;
+		this.player = player;
 	}
 	
 	@Override
@@ -29,30 +33,30 @@ public class InputHandler extends KeyAdapter{
         }
 
         // DEBUG INPUT
-       /* if (key == KeyEvent.VK_H) {
-            if (!isInvincible) {
-                health = Math.max(health - 10, 0);
-                isInvincible = true;
-                invincibilityTimer = INVINCIBILITY_DURATION;
+       if (key == KeyEvent.VK_H) {
+            if (!m.isInvincible) {
+            	m.health = Math.max(m.health - 10, 0);
+            	m.isInvincible = true;
+            	m.invincibilityTimer = m.INVINCIBILITY_DURATION;
 
-                if (health == 0) {
-                    gameOver = true;
+                if (m.health == 0) {
+                	m.gameOver = true;
                 }
             }
         }
         // god mode
         if (key == KeyEvent.VK_G) {
-            maxHealth = 999999;
-            health = maxHealth;
+        	m.maxHealth = 999999;
+        	m.health = m.maxHealth;
         }
         if (key == KeyEvent.VK_M) {
-            mana = Math.max(mana - 5, 0);
+        	m.mana = Math.max(m.mana - 5, 0);
         }
         if (key == KeyEvent.VK_X) {
-            xp = Math.max(xp + 5, 0);
-        }*/
+        	m.xp = Math.max(m.xp + 5, 0);
+        }
         if (key == KeyEvent.VK_A) {
-        	m.attackMonster();
+        	player.attackMonster();
         	m.mana -= 5;
             if (m.mana <= 0) {
             	m.mana = 0;
