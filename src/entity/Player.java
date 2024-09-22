@@ -4,44 +4,70 @@ import main.Main;
 
 public class Player {
 
+    public int maxHealth = 100;
+    public int maxMana = 100;
+    public int health = maxHealth;
+    public int mana = maxMana;
+    public int level = 1;
+    public int nextXp = 100;
+    public int attack = 1;
+    public int defense = 1;
+    public int vitality = 1;
+    public int wisdom = 1;
+    public int attributPoint = 1;
+
 	Main m;
-	Monster monster;
+	Mob mob;
 	
-	public Player(Main m) {
+	public Player(Main m,Mob mob) {
 		this.m = m;
+		this.mob = mob;
+	}
+	
+	public void update() {
+        levelUpSystem();
+        regenerationHpMp();
+        m.grid[m.playerY][m.playerX] = '@';
+        
+        if (m.isInvincible) {
+            m.invincibilityTimer--;
+            if (m.invincibilityTimer <= 0) {
+                m.isInvincible = false;
+            }
+        }
 	}
 	
 	public void levelUpSystem() {
-        if (m.xp >= m.nextXp) {
+        if (m.xp >= nextXp) {
         	m.xp = 0;
-        	m.level++;
-        	m.nextXp *= 1.5;
-        	m.maxHealth *= 1.2;
-        	m.maxMana *= 1.3;
-        	m.health = m.maxHealth;
-        	m.mana = m.maxMana;
-        	m.attributPoint++;
+        	level++;
+        	nextXp *= 1.5;
+        	maxHealth *= 1.2;
+        	maxMana *= 1.3;
+        	health = maxHealth;
+        	mana = maxMana;
+        	attributPoint++;
         }
     }
 
     public void regenerationHpMp() {
-        if (m.health != m.maxHealth) {
+        if (health != maxHealth) {
         	m.timerHealth++;
             if (m.timerHealth >= 50) {
-            	m.health += 1 * m.vitality;
-                if (m.health >= m.maxHealth) {
-                	m.health = m.maxHealth;
+            	health += 1 * vitality;
+                if (health >= maxHealth) {
+                	health = maxHealth;
                 }
                 m.timerHealth = 0;
             }
         }
 
-        if (m.mana != m.maxMana) {
+        if (mana != maxMana) {
         	m.timerMana++;
             if (m.timerMana >= 25) {
-            	m.mana += 1 * m.wisdom;
-                if (m.mana >= m.maxMana) {
-                	m.mana = m.maxMana;
+            	mana += 1 * wisdom;
+                if (mana >= maxMana) {
+                	mana = maxMana;
                 }
                 m.timerMana = 0;
             }
@@ -49,12 +75,10 @@ public class Player {
     }
     
     public void attackMonster() {
-        for (int i = 0; i < m.monsters.size(); i++) {
-            monster = m.monsters.get(i);
-            if (Math.abs(monster.x - m.playerX) <= 1 && Math.abs(monster.y - m.playerY) <= 1) {
-            	m.monsters.remove(i);
-            	m.xp += 10;
-                return;
+        for (int i = 0; i < mob.mobs.size(); i++) {
+            Mob mob1 = mob.mobs.get(i);
+            if (Math.abs(mob1.x - m.playerX) <= 1 && Math.abs(mob1.y - m.playerY) <= 1) {
+            	mob1.hp -= attack;
             }
         }
     }

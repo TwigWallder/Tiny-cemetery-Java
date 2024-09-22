@@ -2,14 +2,19 @@ package utils;
 
 import java.util.Random;
 
-import entity.Monster;
+import entity.Mob;
+import entity.Player;
 import main.Main;
 
 public class GenerateWorld {
 	Main m;
+	Player player;
+	Mob mob;
 	
-	public GenerateWorld(Main m) {
+	public GenerateWorld(Main m, Player player, Mob mob) {
 		this.m = m;
+		this.player = player;
+		this.mob = mob;
 	}
 	
 	public void fillEmptyGrid() {
@@ -31,19 +36,19 @@ public class GenerateWorld {
     
     public void newFloor() {
     	m.floor++;
-    	m.nextNumMonster *= 1.5;
-    	m.monsterDamage *= 1.2;
-    	m.monsterSpawn = m.nextNumMonster;
-    	spawnMonsters();
+    	m.nextNumMob *= 1.5;
+    	m.mobDamage *= 1.2;
+    	m.mobSpawn = m.nextNumMob;
+    	spawnMobs();
     	m.timeLeft += 30;
     }
     
-    public void spawnMonsters() {
+    public void spawnMobs() {
         Random rand = new Random();
-        for (int i = 0; i < m.monsterSpawn; i++) {
+        for (int i = 0; i < m.mobSpawn; i++) {
             int x = rand.nextInt(m.width - 2) + 1;
             int y = rand.nextInt(m.height - 2) + 1;
-            m.monsters.add(new Monster(x, y, m));
+            mob.mobs.add(new Mob(x, y, m, player));
         }
     }
 }

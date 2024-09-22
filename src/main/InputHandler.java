@@ -8,77 +8,95 @@ import entity.Player;
 public class InputHandler extends KeyAdapter{
 	Main m;
 	Player player;
+	UI ui;
 	
-	public InputHandler(Main m, Player player) {
+	public InputHandler(Main m, Player player, UI ui) {
 		this.m = m;
 		this.player = player;
+		this.ui = ui;
 	}
 	
 	@Override
     public void keyPressed(KeyEvent e) {
         if (m.gameOver) return;
 
+        int gridRight = m.grid[m.playerY][m.playerX + 1];
+        int gridLeft = m.grid[m.playerY][m.playerX - 1];
+        int gridDown = m.grid[m.playerY + 1][m.playerX];
+        int gridUp = m.grid[m.playerY - 1][m.playerX];
+
         int key = e.getKeyCode();
-        if (key == KeyEvent.VK_LEFT && m.playerX > 1) {
+        if (key == KeyEvent.VK_LEFT && m.playerX > 1 && gridLeft != '#' && gridLeft != 'M') {
         	m.playerX--;
         }
-        if (key == KeyEvent.VK_RIGHT && m.playerX < m.width - 2) {
+        if (key == KeyEvent.VK_RIGHT && m.playerX < m.width - 2 && gridRight != '#' && gridRight != 'M') {
         	m.playerX++;
         }
-        if (key == KeyEvent.VK_UP && m.playerY > 1) {
+        if (key == KeyEvent.VK_UP && m.playerY > 1 && gridUp != '#' && gridUp != 'M') {
         	m.playerY--;
         }
-        if (key == KeyEvent.VK_DOWN && m.playerY < m.height - 2) {
+        if (key == KeyEvent.VK_DOWN && m.playerY < m.height - 2 && gridDown != '#' && gridDown != 'M') {
         	m.playerY++;
         }
-
+        if(key == KeyEvent.VK_P && !ui.pause) {
+        	ui.pause = true;
+        } else {
+        	ui.pause = false;
+        }
+        
         // DEBUG INPUT
+        if(key == KeyEvent.VK_F1) {
+        	m.scale ++;
+        }
+        if(key == KeyEvent.VK_F2) {
+        	m.scale --;
+        }
        if (key == KeyEvent.VK_H) {
             if (!m.isInvincible) {
-            	m.health = Math.max(m.health - 10, 0);
+            	player.health = Math.max(player.health - 10, 0);
             	m.isInvincible = true;
             	m.invincibilityTimer = m.INVINCIBILITY_DURATION;
 
-                if (m.health == 0) {
+                if (player.health == 0) {
                 	m.gameOver = true;
                 }
             }
         }
         // god mode
         if (key == KeyEvent.VK_G) {
-        	m.maxHealth = 999999;
-        	m.health = m.maxHealth;
+        	player.maxHealth = 999999;
+        	player.health = player.maxHealth;
         }
         if (key == KeyEvent.VK_M) {
-        	m.mana = Math.max(m.mana - 5, 0);
+        	player.mana = Math.max(player.mana - 5, 0);
         }
         if (key == KeyEvent.VK_X) {
         	m.xp = Math.max(m.xp + 5, 0);
         }
         if (key == KeyEvent.VK_A) {
         	player.attackMonster();
-        	m.mana -= 5;
-            if (m.mana <= 0) {
-            	m.mana = 0;
+        	player.mana -= 5;
+            if (player.mana <= 0) {
+            	player.mana = 0;
             }
         }
-        if (m.attributPoint > 0) {
+        if (player.attributPoint > 0) {
             switch (key) {
                 case KeyEvent.VK_1:
-                	m.attack++;
-                	m.attributPoint--;
+                	player.attack++;
+                	player.attributPoint--;
                     break;
                 case KeyEvent.VK_2:
-                	m.defense++;
-                	m.attributPoint--;
+                	player.defense++;
+                	player.attributPoint--;
                     break;
                 case KeyEvent.VK_3:
-                	m.vitality++;
-                	m.attributPoint--;
+                	player.vitality++;
+                	player.attributPoint--;
                     break;
                 case KeyEvent.VK_4:
-                	m.wisdom++;
-                	m.attributPoint--;
+                	player.wisdom++;
+                	player.attributPoint--;
                     break;
             }
 

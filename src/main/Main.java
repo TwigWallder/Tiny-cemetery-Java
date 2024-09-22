@@ -5,12 +5,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import entity.Monster;
+import entity.Mob;
 import entity.Player;
 import utils.GenerateWorld;
 import utils.TimeLeft;
@@ -19,39 +18,26 @@ public class Main extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
 	public final int width = 40;
 	public final int height = 30;
+	public final int SCREEN_WIDTH = 1280;
+	public final int SCREEN_HEIGHT = 720;
     public char[][] grid;
-    public final ArrayList<Monster> monsters = new ArrayList<>();
 
     // Stats player
     public int playerX = 5;
     public int playerY = 5;
-    public int maxHealth = 100;
-    public int maxMana = 100;
-    public int health = maxHealth;
-    public int mana = maxMana;
-    public int level = 1;
     public int xp = 0;
-    public int nextXp = 100;
-    public int attack = 1;
-    public int defense = 1;
-    public int vitality = 1;
-    public int wisdom = 1;
-    public int attributPoint = 0;
 
     //floor & info
     public int floor = 0;
-    public int monsterLeft = 0;
-    public int monsterSpawn = 7;
-    public int nextNumMonster = 7;
-    public int monsterDamage = 10;
-    public int timeLeft = 100;
+    public int mobLeft = 0;
+    public int mobSpawn = 7;
+    public int nextNumMob = 7;
+    public int mobDamage = 10;
+    public int timeLeft = 120;
 	public int counterTime = 0;
 
     public int timerHealth = 0;
     public int timerMana = 0;
-
-    private boolean running = true;
-    public boolean gameOver = false;
 
     // Invincibility variables
     public boolean isInvincible = false;
@@ -59,16 +45,23 @@ public class Main extends JPanel implements Runnable {
     // Duration of invincibility in update cycles
     public static final int INVINCIBILITY_DURATION = 30;
     
+    // game state
+    private boolean running = true;
+    public boolean gameOver = false;
+    
+    public int yOffset = 35;
+    
     private UI ui;
     private TimeLeft timeL;
     private GenerateWorld gw;
     private Player player;
+    private Mob mob;
 
     public Main() {
         init();
         setFocusable(true);
-        setPreferredSize(new Dimension(1280, 720));
-        addKeyListener(new InputHandler(this, player));
+        setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        addKeyListener(new InputHandler(this, player, ui));
 
         Thread gameThread = new Thread(this);
         gameThread.start();
@@ -76,55 +69,40 @@ public class Main extends JPanel implements Runnable {
 
     public void init() {
         grid = new char[height][width];
-        player = new Player(this);
-        gw = new GenerateWorld(this);
+        mob = new Mob(0, 0, this, player);
+        player = new Player(this, mob);
+        gw = new GenerateWorld(this, player, mob);
         gw.fillEmptyGrid();
-        gw.spawnMonsters();
-        ui = new UI(this);
+        gw.spawnMobs();
+        ui = new UI(this, player);
         timeL = new TimeLeft(this);
     }
     
     public void update() {
-        System.out.println(nextNumMonster);
-        int numMonster = 0;
         if (gameOver) return;
 
         gw.fillEmptyGrid();
-        player.levelUpSystem();
-        player.regenerationHpMp();
         timeL.getTimer();
+
+        player.update();
+        mob.update();
+
+        // game overs trigger
+        if (player.health <= 0) {
+            gameOver = true;
+        }
         if(timeL.getTimer() == 0) {
         	gameOver = true;
         }
-        for (Monster monster : monsters) {
-            numMonster++;
-            monsterLeft = numMonster;
-            monster.moveTowardsPlayer(playerX, playerY, grid);
-            if (!isInvincible && Math.abs(monster.x - playerX) <= 1 && Math.abs(monster.y - playerY) <= 1) {
-            	monster.damagePlayer();
-                isInvincible = true;
-                invincibilityTimer = INVINCIBILITY_DURATION;
-            }
-            grid[monster.y][monster.x] = 'M';
-        }
         
-        if (health == 0) {
-            gameOver = true;
-        }
-        
-        if (numMonster == 0) {
+        // Next floor
+        if (mob.mobs.size() == 0) {
             gw.newFloor();
-        }
-        grid[playerY][playerX] = '@';
-
-        if (isInvincible) {
-            invincibilityTimer--;
-            if (invincibilityTimer <= 0) {
-                isInvincible = false;
-            }
         }
     }
 
+    // debug
+    public int scale = 2;
     public void render(Graphics g) {
         g.setFont(new Font("Monospaced", Font.PLAIN, 20));
 
@@ -151,20 +129,22 @@ public class Main extends JPanel implements Runnable {
                         g.setColor(Color.RED);
                         break;
                 }
-                g.drawString(String.valueOf(grid[i][j]), gridXOffset + j * 20, (i + 1) * 20);
+
+                // décalage effet
+                int xOffset = (int)(Math.sin(System.currentTimeMillis() * 0.001 + j * 0.1) * scale);
+                g.drawString(String.valueOf(grid[i][j]), gridXOffset + j * 20 + xOffset, ((i + 1) * 20) + yOffset);
             }
         }
 
         ui.drawUI(g);
 
-        if (gameOver) {
-            g.setColor(Color.black);
-            g.fillRect(0, 0, width * 50, height * 50);
-            g.setColor(Color.RED);
-            g.setFont(new Font("Monospaced", Font.BOLD, 40));
-            g.drawString("GAME OVER", getWidth() / 2 - 100, getHeight() / 2);
+        for (int i = 0; i < SCREEN_HEIGHT; i += 2) {
+            // ligne balayage
+            g.setColor(new Color(255, 255, 255, 30)); 
+            g.drawLine(0, i, SCREEN_WIDTH, i);
         }
     }
+
 
     @Override
     public void paintComponent(Graphics g) {
@@ -175,7 +155,9 @@ public class Main extends JPanel implements Runnable {
     @Override
     public void run() {
         while (running) {
-            update();
+        	if(!ui.pause) {
+                update();
+        	}
             repaint();
 
             try {
@@ -194,7 +176,7 @@ public class Main extends JPanel implements Runnable {
         JFrame frame = new JFrame("Tiny Cemetery - Java version");
         Main game = new Main();
         frame.add(game);
-        frame.setSize(1280, 720);
+        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
