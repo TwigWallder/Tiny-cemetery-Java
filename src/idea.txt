@@ -1,0 +1,4 @@
+Créer des staff différent et des armurs
+looté a chaque fin de niveau
+
+Créer une selection de personnage (par exemple: nécromancien, Druide, swordcaster etc...

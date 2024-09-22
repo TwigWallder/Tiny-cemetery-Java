@@ -13,7 +13,7 @@ public class Mob {
     public int moveTimer2 = 0;
     public char mobChar = 'M';
     public Color mobColor = Color.orange;
-    public final int moveInterval = 50;
+    public int moveInterval = 50;
     public int hp = 2;
     public final ArrayList<Mob> mobs = new ArrayList<>();
 
@@ -78,7 +78,6 @@ public class Mob {
         int gridDown = grid[y + 1][x];
         int gridUp = grid[y - 1][x];
         
-        // Si le mob est à plus d'un bloc du joueur, il se rapproche
         if (x < playerX - 1 && gridRight != '#' && gridRight != 'M') {
             x++;
         } else if (x > playerX + 1 && gridLeft != '#' && gridLeft != 'M') {

@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -15,11 +13,11 @@ import utils.GenerateWorld;
 import utils.TimeLeft;
 
 public class Main extends JPanel implements Runnable {
-	private static final long serialVersionUID = 1L;
-	public final int width = 40;
-	public final int height = 30;
-	public final int SCREEN_WIDTH = 1280;
-	public final int SCREEN_HEIGHT = 720;
+    private static final long serialVersionUID = 1L;
+    public final int width = 40;
+    public final int height = 30;
+    public final int SCREEN_WIDTH = 1280;
+    public final int SCREEN_HEIGHT = 720;
     public char[][] grid;
 
     // Stats player
@@ -27,14 +25,14 @@ public class Main extends JPanel implements Runnable {
     public int playerY = 5;
     public int xp = 0;
 
-    //floor & info
+    // Floor & info
     public int floor = 0;
     public int mobLeft = 0;
     public int mobSpawn = 7;
     public int nextNumMob = 7;
     public int mobDamage = 10;
     public int timeLeft = 120;
-	public int counterTime = 0;
+    public int counterTime = 0;
 
     public int timerHealth = 0;
     public int timerMana = 0;
@@ -42,15 +40,14 @@ public class Main extends JPanel implements Runnable {
     // Invincibility variables
     public boolean isInvincible = false;
     public int invincibilityTimer = 0;
-    // Duration of invincibility in update cycles
     public static final int INVINCIBILITY_DURATION = 30;
-    
-    // game state
+
+    // Game state
     private boolean running = true;
     public boolean gameOver = false;
-    
+
     public int yOffset = 35;
-    
+
     private UI ui;
     private TimeLeft timeL;
     private GenerateWorld gw;
@@ -77,7 +74,7 @@ public class Main extends JPanel implements Runnable {
         ui = new UI(this, player);
         timeL = new TimeLeft(this);
     }
-    
+
     public void update() {
         if (gameOver) return;
 
@@ -87,22 +84,23 @@ public class Main extends JPanel implements Runnable {
         player.update();
         mob.update();
 
-        // game overs trigger
+        // Game over triggers
         if (player.health <= 0) {
             gameOver = true;
         }
-        if(timeL.getTimer() == 0) {
-        	gameOver = true;
+        if (timeL.getTimer() == 0) {
+            gameOver = true;
         }
-        
+
         // Next floor
         if (mob.mobs.size() == 0) {
-            gw.newFloor();
+            gw.newFloor();  
         }
     }
 
-    // debug
+    // Debug
     public int scale = 2;
+
     public void render(Graphics g) {
         g.setFont(new Font("Monospaced", Font.PLAIN, 20));
 
@@ -114,24 +112,34 @@ public class Main extends JPanel implements Runnable {
             for (int j = 0; j < width; j++) {
                 switch (grid[i][j]) {
                     case '|':
-                        g.setColor(Color.MAGENTA);
+                        g.setColor(Color.MAGENTA); 
                         break;
                     case '#':
-                        g.setColor(Color.WHITE);
+                        g.setColor(Color.WHITE);  
                         break;
                     case ',':
-                        g.setColor(Color.GREEN);
+                        g.setColor(Color.GREEN); 
                         break;
                     case '@':
-                        g.setColor(isInvincible ? Color.WHITE : Color.YELLOW);
+                        g.setColor(isInvincible ? Color.WHITE : Color.YELLOW);  
                         break;
+                        // M are outdated (only for testing)
                     case 'M':
-                        g.setColor(Color.RED);
+                        g.setColor(Color.RED);  
+                        break;
+                    case 'S':
+                        g.setColor(Color.GRAY);  
+                        break;
+                    case 'Z':
+                        g.setColor(Color.RED); 
+                        break;
+                    case 'V':
+                        g.setColor(Color.PINK); 
                         break;
                 }
 
-                // décalage effet
-                int xOffset = (int)(Math.sin(System.currentTimeMillis() * 0.001 + j * 0.1) * scale);
+                // Shift effect
+                int xOffset = (int) (Math.sin(System.currentTimeMillis() * 0.001 + j * 0.1) * scale);
                 g.drawString(String.valueOf(grid[i][j]), gridXOffset + j * 20 + xOffset, ((i + 1) * 20) + yOffset);
             }
         }
@@ -139,12 +147,11 @@ public class Main extends JPanel implements Runnable {
         ui.drawUI(g);
 
         for (int i = 0; i < SCREEN_HEIGHT; i += 2) {
-            // ligne balayage
-            g.setColor(new Color(255, 255, 255, 30)); 
+            // Ligne balayage
+            g.setColor(new Color(255, 255, 255, 30));
             g.drawLine(0, i, SCREEN_WIDTH, i);
         }
     }
-
 
     @Override
     public void paintComponent(Graphics g) {
@@ -155,9 +162,9 @@ public class Main extends JPanel implements Runnable {
     @Override
     public void run() {
         while (running) {
-        	if(!ui.pause) {
+            if (!ui.pause) {
                 update();
-        	}
+            }
             repaint();
 
             try {
@@ -176,7 +183,7 @@ public class Main extends JPanel implements Runnable {
         JFrame frame = new JFrame("Tiny Cemetery - Java version");
         Main game = new Main();
         frame.add(game);
-        
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
