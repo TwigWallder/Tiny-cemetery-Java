@@ -16,6 +16,7 @@ public class Zombie extends Mob {
         this.mobChar = 'Z';  
         this.hp = 4;  
         this.moveInterval = 70; 
+        this.mobGiveXp = 30;
     }
 
     @Override

@@ -17,6 +17,7 @@ public class Vampire extends Mob {
         this.mobChar = 'V';  
         this.hp = 3; 
         this.moveInterval = 50;  
+        this.mobGiveXp = 50;
     }
 
     @Override

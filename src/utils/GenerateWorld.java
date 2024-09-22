@@ -64,7 +64,7 @@ public class GenerateWorld {
             }else if (pourcentage >= 85 && pourcentage <= 100) {
             	mobType = 2;
             }
-            System.out.println(pourcentage);
+            
             switch (mobType) {
                 case 0:
                 	// Skeleton 55%

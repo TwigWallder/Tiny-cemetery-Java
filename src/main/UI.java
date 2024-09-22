@@ -69,11 +69,11 @@ public class UI {
 
         // Display Spell
         g.setColor(Color.lightGray);
-        g.drawString("Spell:   Cost:  Input:", uiStartX, uiStartY + 370);
-        g.drawString("Charge    (5)    [A]", uiStartX, uiStartY + 400);
-        g.drawString("FireBall  (20)   [R]", uiStartX, uiStartY + 420);
-        g.drawString("Ice Pick  (25)   [I]", uiStartX, uiStartY + 440);
-        g.drawString("Explosion (100)  [T]", uiStartX, uiStartY + 460);
+        g.drawString("Spell:    Cost:  Input:", uiStartX, uiStartY + 370);
+        g.drawString("Fire Dance (10)   [A]", uiStartX, uiStartY + 400);
+        g.drawString("FireBall   (20)   [R]", uiStartX, uiStartY + 420);
+        g.drawString("Ice Pick   (25)   [I]", uiStartX, uiStartY + 440);
+        g.drawString("Explosion  (100)  [T]", uiStartX, uiStartY + 460);
         g.setColor(Color.white);
         g.drawRect(uiStartX - 5, uiStartY + 350, 300, 120);
         

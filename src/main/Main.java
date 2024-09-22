@@ -31,7 +31,7 @@ public class Main extends JPanel implements Runnable {
     public int mobSpawn = 7;
     public int nextNumMob = 7;
     public int mobDamage = 10;
-    public int timeLeft = 120;
+    public int timeLeft = 360;
     public int counterTime = 0;
 
     public int timerHealth = 0;
@@ -41,6 +41,11 @@ public class Main extends JPanel implements Runnable {
     public boolean isInvincible = false;
     public int invincibilityTimer = 0;
     public static final int INVINCIBILITY_DURATION = 30;
+
+    // Transformation variables
+    public boolean transformCommas = false;
+    public long transformStartTime = 0;
+    public static final long TRANSFORM_DURATION = 250; 
 
     // Game state
     private boolean running = true;
@@ -80,9 +85,13 @@ public class Main extends JPanel implements Runnable {
 
         gw.fillEmptyGrid();
         timeL.getTimer();
-
         player.update();
         mob.update();
+
+        // for fire dance timer
+        if (transformCommas && System.currentTimeMillis() - transformStartTime > TRANSFORM_DURATION) {
+            transformCommas = false;
+        }
 
         // Game over triggers
         if (player.health <= 0) {
@@ -108,39 +117,49 @@ public class Main extends JPanel implements Runnable {
         g.fillRect(0, 0, getWidth(), getHeight());
 
         int gridXOffset = 50;
+
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                switch (grid[i][j]) {
-                    case '|':
-                        g.setColor(Color.MAGENTA); 
-                        break;
-                    case '#':
-                        g.setColor(Color.WHITE);  
-                        break;
-                    case ',':
-                        g.setColor(Color.GREEN); 
-                        break;
-                    case '@':
-                        g.setColor(isInvincible ? Color.WHITE : Color.YELLOW);  
-                        break;
-                        // M are outdated (only for testing)
-                    case 'M':
-                        g.setColor(Color.RED);  
-                        break;
-                    case 'S':
-                        g.setColor(Color.GRAY);  
-                        break;
-                    case 'Z':
-                        g.setColor(Color.RED); 
-                        break;
-                    case 'V':
-                        g.setColor(Color.PINK); 
-                        break;
+                char currentChar = grid[i][j];
+
+                // for fire dance spell
+                boolean isAroundPlayer = Math.abs(playerX - j) <= 1 && Math.abs(playerY - i) <= 1;
+
+                if (currentChar == ',' && isAroundPlayer && transformCommas) {
+                    g.setColor(Color.ORANGE);
+                    currentChar = '~'; 
+                } else {
+                    switch (currentChar) {
+                        case '|':
+                            g.setColor(Color.MAGENTA);
+                            break;
+                        case '#':
+                            g.setColor(Color.WHITE);
+                            break;
+                        case ',':
+                            g.setColor(Color.GREEN);
+                            break;
+                        case '@':
+                            g.setColor(isInvincible ? Color.WHITE : Color.YELLOW);
+                            break;
+                        case 'M':
+                            g.setColor(Color.RED);
+                            break;
+                        case 'S':
+                            g.setColor(Color.GRAY);
+                            break;
+                        case 'Z':
+                            g.setColor(Color.RED);
+                            break;
+                        case 'V':
+                            g.setColor(Color.PINK);
+                            break;
+                    }
                 }
 
-                // Shift effect
+                // Appliquer l'effet de décalage
                 int xOffset = (int) (Math.sin(System.currentTimeMillis() * 0.001 + j * 0.1) * scale);
-                g.drawString(String.valueOf(grid[i][j]), gridXOffset + j * 20 + xOffset, ((i + 1) * 20) + yOffset);
+                g.drawString(String.valueOf(currentChar), gridXOffset + j * 20 + xOffset, ((i + 1) * 20) + yOffset);
             }
         }
 
@@ -152,6 +171,7 @@ public class Main extends JPanel implements Runnable {
             g.drawLine(0, i, SCREEN_WIDTH, i);
         }
     }
+
 
     @Override
     public void paintComponent(Graphics g) {

@@ -14,6 +14,7 @@ public class Mob {
     public char mobChar = 'M';
     public Color mobColor = Color.orange;
     public int moveInterval = 50;
+    public int mobGiveXp = 10;
     public int hp = 2;
     public final ArrayList<Mob> mobs = new ArrayList<>();
 
@@ -50,7 +51,7 @@ public class Mob {
             if (mob.hp <= 0) {
                 // Utilisation de l'iterator pour la suppression
                 iterator.remove();
-                m.xp += rand.nextInt(10-5)+5;
+                m.xp += rand.nextInt(mobGiveXp-5)+5;
             }
         }
     }

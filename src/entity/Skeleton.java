@@ -15,7 +15,8 @@ public class Skeleton extends Mob {
         super(x, y, m, player);
         this.mobChar = 'S';  
         this.hp = 1;  
-        this.moveInterval = 30; 
+        this.moveInterval = 30;
+        this.mobGiveXp = 10; 
     }
 
     @Override
