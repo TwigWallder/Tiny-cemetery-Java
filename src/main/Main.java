@@ -115,9 +115,6 @@ public class Main extends JPanel implements Runnable {
     // Debug
     public int scale = 2;
 
-    public int r = 0;
-    public int g = 0;
-    public int b = 0;
     public void render(Graphics g) {
         g.setFont(new Font("Monospaced", Font.PLAIN, 20));
         
@@ -125,21 +122,6 @@ public class Main extends JPanel implements Runnable {
         g.fillRect(0, 0, getWidth(), getHeight());
 
         int gridXOffset = 50;
-        
-
-        r +=150;
-        this.g += 2;
-        b += 3;
-        
-        if(r >= 255) {
-        	r = 0;
-        }
-        if(this.g >= 255) {
-        	this.g = 0;
-        }
-        if(b >= 255) {
-        	b = 0;
-        }
         
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -195,7 +177,7 @@ public class Main extends JPanel implements Runnable {
                 g.setFont(new Font("Monospaced", Font.BOLD, 32));
         		g.drawString("You are being attacked /!\\", SCREEN_WIDTH/2  - 300, SCREEN_HEIGHT/2);
             } else {
-            	g.setColor(cp.PURPLE_COLOR(30));
+            	g.setColor(new Color(0,0,0,50));
             }
             
             g.drawLine(0, i, SCREEN_WIDTH, i);
