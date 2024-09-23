@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -50,6 +51,7 @@ public class Main extends JPanel implements Runnable {
     // Game state
     private boolean running = true;
     public boolean gameOver = false;
+    public boolean status = false;
 
     public int yOffset = 35;
 
@@ -81,6 +83,7 @@ public class Main extends JPanel implements Runnable {
     }
 
     public void update() {
+    	System.out.println(status);
         if (gameOver) return;
 
         gw.fillEmptyGrid();
@@ -110,13 +113,32 @@ public class Main extends JPanel implements Runnable {
     // Debug
     public int scale = 2;
 
+    public int r = 0;
+    public int g = 0;
+    public int b = 0;
     public void render(Graphics g) {
         g.setFont(new Font("Monospaced", Font.PLAIN, 20));
-
+        
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         int gridXOffset = 50;
+        
+
+        r +=150;
+        this.g += 2;
+        b += 3;
+        
+        if(r >= 255) {
+        	r = 0;
+        }
+        if(this.g >= 255) {
+        	this.g = 0;
+        }
+        if(b >= 255) {
+        	b = 0;
+        }
+        
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -124,20 +146,20 @@ public class Main extends JPanel implements Runnable {
 
                 // for fire dance spell
                 boolean isAroundPlayer = Math.abs(playerX - j) <= 1 && Math.abs(playerY - i) <= 1;
-
+                
                 if (currentChar == ',' && isAroundPlayer && transformCommas) {
                     g.setColor(Color.ORANGE);
                     currentChar = '~'; 
                 } else {
                     switch (currentChar) {
                         case '|':
-                            g.setColor(Color.MAGENTA);
+                        	g.setColor(Color.magenta);
                             break;
                         case '#':
                             g.setColor(Color.WHITE);
                             break;
                         case ',':
-                            g.setColor(Color.GREEN);
+                            g.setColor(Color.green);
                             break;
                         case '@':
                             g.setColor(isInvincible ? Color.WHITE : Color.YELLOW);
@@ -152,7 +174,7 @@ public class Main extends JPanel implements Runnable {
                             g.setColor(Color.RED);
                             break;
                         case 'V':
-                            g.setColor(Color.PINK);
+                        	g.setColor(new Color(255, 100, 250, 255));
                             break;
                     }
                 }
@@ -164,10 +186,17 @@ public class Main extends JPanel implements Runnable {
         }
 
         ui.drawUI(g);
-
         for (int i = 0; i < SCREEN_HEIGHT; i += 2) {
             // Ligne balayage
-            g.setColor(new Color(255, 255, 255, 30));
+        	if (isInvincible && status) {
+        		g.setColor(new Color(255, 0, 0, 100));
+
+                g.setFont(new Font("Monospaced", Font.BOLD, 32));
+        		g.drawString("You are being attacked /!\\", SCREEN_WIDTH/2  - 300, SCREEN_HEIGHT/2);
+            } else {
+            	g.setColor(new Color(255, 255, 255, 30));
+            }
+            
             g.drawLine(0, i, SCREEN_WIDTH, i);
         }
     }

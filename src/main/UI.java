@@ -32,19 +32,13 @@ public class UI {
 
         barre(uiStartX, uiStartY + 60, "XP: ", Color.yellow, m.xp, player.nextXp, g);
 
-        // Display stats       
-        g.setColor(Color.getHSBColor(100, 100, 100));
-        g.drawString("Status:  Lvl:  Input:", uiStartX, uiStartY + 170);
-        g.drawString("Attack:   " + player.attack + "     [1]", uiStartX, uiStartY + 200);
-        g.drawString("Defense:  " + player.defense + "     [2]", uiStartX, uiStartY + 220);
-        g.drawString("Vitality: " + player.vitality + "     [3]", uiStartX, uiStartY + 240);
-        g.drawString("Wisdom:   " + player.wisdom + "     [4]", uiStartX, uiStartY + 260);
-        g.drawString("========================", uiStartX, uiStartY + 285);
-        g.drawString("Attribute Point: " + player.attributPoint + "", uiStartX, uiStartY + 300);
+        // Mob information
+        g.setColor(Color.getHSBColor(0, 290, 100));
+        g.drawString("Mob:", uiStartX, uiStartY + 330);
+        g.drawString("HP: " , uiStartX, uiStartY + 360);
+        g.drawString("State: ", uiStartX, uiStartY + 390);
         g.setColor(Color.white);
-        g.drawRect(uiStartX - 5, uiStartY + 150, 300, 165);
-        // stats
-        g.drawRect(uiStartX - 5, uiStartY - 5, 300, 130);
+        g.drawRect(uiStartX - 5, uiStartY + 300, 300, 105);
 
         // floor & info
         g.setColor(Color.getHSBColor(0, 290, 100));
@@ -66,17 +60,42 @@ public class UI {
         g.drawRect(47, 3 + m.yOffset, 800, 605);
         
         
-
-        // Display Spell
-        g.setColor(Color.lightGray);
-        g.drawString("Spell:    Cost:  Input:", uiStartX, uiStartY + 370);
-        g.drawString("Fire Dance (10)   [A]", uiStartX, uiStartY + 400);
-        g.drawString("FireBall   (20)   [R]", uiStartX, uiStartY + 420);
-        g.drawString("Ice Pick   (25)   [I]", uiStartX, uiStartY + 440);
-        g.drawString("Explosion  (100)  [T]", uiStartX, uiStartY + 460);
+     // stats
         g.setColor(Color.white);
-        g.drawRect(uiStartX - 5, uiStartY + 350, 300, 120);
-        
+        g.drawRect(uiStartX - 5, uiStartY - 5, 300, 130);
+        if(m.status) { 
+        	g.setColor(Color.black);
+        	g.fillRect(0, 0, m.width * 50, m.height * 50);
+            
+           
+            g.setColor(Color.white);
+            
+            int attributeXOffset = 200;
+            g.drawString("| ATTRIBUTES |", (uiStartX /2 + 150)+attributeXOffset, uiStartY);
+            g.setColor(new Color(100, 100, 150, 255));
+            g.drawString("| NAME |  | LEVEL |   | INPUT |", (uiStartX/2 + 55)+attributeXOffset, uiStartY + 40);
+            g.drawString("Attack        " + player.attack +   "          [1]", (uiStartX/2 + 55)+attributeXOffset, uiStartY + 70);
+            g.drawString("Defense       " + player.defense +  "          [2]", (uiStartX/2+ 55)+attributeXOffset, uiStartY + 100);
+            g.drawString("Vitality      " + player.vitality + "          [3]", (uiStartX/2+ 55)+attributeXOffset, uiStartY + 130);
+            g.drawString("Wisdom        " + player.wisdom +   "          [4]", (uiStartX/2+ 55)+attributeXOffset, uiStartY + 160);
+            g.drawString("===============================", (uiStartX/2+ 55)+attributeXOffset, uiStartY + 190);
+            g.setColor(new Color(150, 100, 100, 255));
+            g.drawString("Attribute Point: " + player.attributPoint + "", (uiStartX/2+130)+attributeXOffset, uiStartY + 210);
+
+            // metre les informations détailler des attributes
+            
+            g.setColor(Color.white);
+            g.drawString("| SPELLS |", uiStartX /10 + 135, uiStartY);
+            g.setColor(new Color(150, 150, 50, 255));
+            g.drawString("| NAME |    | COST |     | INPUT |", uiStartX/10 + 5, uiStartY + 40);
+            g.drawString("Fire Dance    (10)         [A]", uiStartX / 10 + 5, uiStartY + 70);
+            g.drawString("FireBall      (20)         [R]", uiStartX / 10 + 5, uiStartY + 100);
+            g.drawString("Ice Pick      (25)         [I]", uiStartX / 10 + 5, uiStartY + 130);
+            g.drawString("Explosion     (100)        [T]", uiStartX / 10 + 5, uiStartY + 160);
+            g.drawString("=================================", (uiStartX/10+ 5), uiStartY + 190);
+            
+            // metre les informations détailler des spells
+        }
         // pause
         if(pause) {
         	g.setColor(Color.BLACK);

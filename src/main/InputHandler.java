@@ -62,6 +62,12 @@ public class InputHandler extends KeyAdapter {
                 }
             }
         }
+        
+        if(key == KeyEvent.VK_R && !m.status) {
+        	m.status = true;
+        } else {
+        	m.status = false;
+        }
         // god mode
         if (key == KeyEvent.VK_G) {
             player.maxHealth = 999999;
@@ -74,9 +80,10 @@ public class InputHandler extends KeyAdapter {
             m.xp = Math.max(m.xp + 5, 0);
         }
 
+        // fire dance attack
         if (key == KeyEvent.VK_A) {
             if (player.mana >= 5) {
-                player.attackMonster();
+                player.attackMonster(0);
                 player.mana -= 5;
             }
             if (player.mana <= 0) {

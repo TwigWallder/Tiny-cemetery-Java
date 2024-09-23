@@ -74,11 +74,11 @@ public class Player {
         }
     }
     
-    public void attackMonster() {
+    public void attackMonster(int damage) {
         for (int i = 0; i < mob.mobs.size(); i++) {
             Mob mob1 = mob.mobs.get(i);
             if (Math.abs(mob1.x - m.playerX) <= 1 && Math.abs(mob1.y - m.playerY) <= 1) {
-            	mob1.hp -= attack;
+            	mob1.hp -= attack + damage;
             }
         }
     }

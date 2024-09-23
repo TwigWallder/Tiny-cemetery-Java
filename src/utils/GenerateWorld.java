@@ -5,8 +5,8 @@ import java.util.Random;
 import entity.Mob;
 import entity.Player;
 import entity.Skeleton;
-import entity.Zombie;
 import entity.Vampire;
+import entity.Zombie;
 import main.Main;
 
 public class GenerateWorld {
@@ -50,7 +50,7 @@ public class GenerateWorld {
     // Generate mobs
     public void spawnMobs() {
         Random rand = new Random();
-        for (int i = 0; i < m.mobSpawn; i++) {
+        for (int i = 0; i < m.nextNumMob; i++) {
             int x = rand.nextInt(m.width - 2) + 1;
             int y = rand.nextInt(m.height - 2) + 1;
 
