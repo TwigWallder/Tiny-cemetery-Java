@@ -6,9 +6,16 @@ afficher les stats du mob qu'on attaque
 
 Créer une selection de personnage (par exemple: nécromancien, Druide, swordcaster etc...
 
-si tu es invinsible pas de regen
 mettre dans le game over qui tu ta tuer et dautre stats
 
 créer un log system
+
+afficher les stats du mob qu'on aggro en premier
+
+
+// MODIFICATION IMPORTANTE (:sob:)
+Créer une map un shop et un monde a exploré juste a exploré et parlé a des pnj
+tu peu rentrer dans le cimetiere et a la fin de la vague de monstre tu as
+30s pour sortir du ciemetre sinon une nouvelle vague apparait
 
 JE SOUFFRE

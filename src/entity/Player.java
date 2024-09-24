@@ -35,6 +35,10 @@ public class Player {
                 m.isInvincible = false;
             }
         }
+
+        if (mana <= 0) {
+            mana = 0;
+        }
 	}
 	
 	public void levelUpSystem() {
@@ -51,7 +55,7 @@ public class Player {
     }
 
     public void regenerationHpMp() {
-        if (health != maxHealth) {
+        if (health != maxHealth && !m.isInvincible) {
         	m.timerHealth++;
             if (m.timerHealth >= 50) {
             	health += 1 * vitality;

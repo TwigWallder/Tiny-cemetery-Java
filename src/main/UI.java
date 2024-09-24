@@ -90,12 +90,10 @@ public class UI {
             g.drawString("Vitality      " + player.vitality + "          [3]", (uiStartX/2+ 55)+attributeXOffset, uiStartY + 130);
             g.drawString("Wisdom        " + player.wisdom +   "          [4]", (uiStartX/2+ 55)+attributeXOffset, uiStartY + 160);
             g.drawString("===============================", (uiStartX/2+ 55)+attributeXOffset, uiStartY + 190);
-            g.setColor(cp.LIGHT_PURPLE_COLOR(255));
-            g.drawString("Attribute Point: " + player.attributPoint + "", (uiStartX/2+130)+attributeXOffset, uiStartY + 210);
 
             // metre les informations détailler des attributes
             
-            g.setColor(Color.white);
+            g.setColor(cp.WHITE_COLOR(255));
             g.drawString("| SPELLS |", uiStartX /10 + 135, uiStartY);
             g.setColor(cp.YELLOW_COLOR(255));
             g.drawString("| NAME |    | COST |     | INPUT |", uiStartX/10 + 5, uiStartY + 40);
@@ -105,9 +103,27 @@ public class UI {
             g.drawString("Explosion     (100)        [T]", uiStartX / 10 + 5, uiStartY + 160);
             g.drawString("=================================", (uiStartX/10+ 5), uiStartY + 190);
             
-            // metre les informations détailler des spells
+            // INFORMATION
+            int infoXOffset = 250;
+            g.setColor(cp.WHITE_COLOR(255));
+            g.drawString("| INFORMATION |", uiStartX /2 + 55, uiStartY + infoXOffset);
+            g.setColor(cp.LIGHT_PURPLE_COLOR(255));
+            g.drawString("Class: Wizard", uiStartX /2 + 205, uiStartY + infoXOffset + 50);
+            g.drawString("Time Play: ???", uiStartX /2 + 205, uiStartY + infoXOffset + 80);
+            g.drawString("Attribute Point: " + player.attributPoint + "", uiStartX /2 + 205, uiStartY + infoXOffset + 110);
+            g.drawString("Current Floor: 0", uiStartX /2 + 205, uiStartY + infoXOffset + 140);
+            g.drawString("Health: 100/100", uiStartX /2 - 105, uiStartY + infoXOffset + 50);
+            g.drawString("Mana: 100/100", uiStartX /2 - 105, uiStartY + infoXOffset + 80);
+            g.drawString("Experience: 0/100", uiStartX /2 - 105, uiStartY + infoXOffset + 110);
+            g.drawString("Level: 1", uiStartX /2 - 105, uiStartY + infoXOffset + 140);
+            g.drawString("=============================================", uiStartX /2 - 105, uiStartY + infoXOffset + 170);
+            
+            //credits
+
+            g.setColor(cp.PINK_COLOR(255));
+            g.drawString("Game made by TwigWallder \\(^o^)/", 20, m.SCREEN_HEIGHT -20);
         }
-        // pause
+        // PAUSE
         if(pause) {
         	g.setColor(cp.DARK_PURPLE_COLOR(255));
             g.fillRect(m.getWidth() / 2 - 130, m.getHeight() / 2 - 55, m.width*5 - 5, m.height*3 - 5);
@@ -120,7 +136,7 @@ public class UI {
             g.drawString(" _____ ", m.getWidth() / 2 - 120, m.getHeight() / 2 );
         }
         
-        // game over
+        // GAME OVER
         if (m.gameOver) {
             g.setColor(cp.DARK_PURPLE_COLOR(255));
             g.fillRect(0, 0, m.width * 50, m.height * 50);

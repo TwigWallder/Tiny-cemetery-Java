@@ -11,7 +11,7 @@ public class ColorPerso {
     public Color DARK_PURPLE_COLOR(int alpha) {
         return new Color(39, 35, 76, alpha);
     }
-    
+
     public Color PURPLE_COLOR(int alpha) {
         return new Color(115, 60, 124, alpha);
     }

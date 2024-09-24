@@ -4,6 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import entity.Player;
+import utils.LogsMessage;
 
 public class InputHandler extends KeyAdapter {
     Main m;
@@ -24,7 +25,7 @@ public class InputHandler extends KeyAdapter {
         int gridLeft = m.grid[m.playerY][m.playerX - 1];
         int gridDown = m.grid[m.playerY + 1][m.playerX];
         int gridUp = m.grid[m.playerY - 1][m.playerX];
-
+        LogsMessage lm = new LogsMessage();
         int key = e.getKeyCode();
         if (key == KeyEvent.VK_LEFT && m.playerX > 1 && gridLeft != '#' && gridLeft != 'M') {
             m.playerX--;
@@ -63,7 +64,7 @@ public class InputHandler extends KeyAdapter {
             }
         }
         
-        if(key == KeyEvent.VK_R && !m.status) {
+        if(key == KeyEvent.VK_ESCAPE && !m.status) {
         	m.status = true;
         } else {
         	m.status = false;
@@ -86,14 +87,20 @@ public class InputHandler extends KeyAdapter {
                 player.attackMonster(0);
                 player.mana -= 5;
             }
-            if (player.mana <= 0) {
-                player.mana = 0;
-            }
 
             // for fire dance spell
             m.transformCommas = true;
             m.transformStartTime = System.currentTimeMillis();
         }
+        
+        // fire ball attack
+        if (key == KeyEvent.VK_R) {
+        	if(player.mana >= 20) {
+        		player.attackMonster(5);
+        		player.mana -= 20;
+        	}
+        }
+        	
 
         if (player.attributPoint > 0) {
             switch (key) {

@@ -23,15 +23,15 @@ public class Main extends JPanel implements Runnable {
     public char[][] grid;
 
     // Stats player
-    public int playerX = 5;
-    public int playerY = 5;
+    public int playerX = 1;
+    public int playerY = 1;
     public int xp = 0;
 
     // Floor & info
     public int floor = 0;
     public int mobLeft = 0;
-    public int mobSpawn = 7;
-    public int nextNumMob = 7;
+    public int mobSpawn = 17;
+    public int nextNumMob = 17;
     public int mobDamage = 10;
     public int timeLeft = 360;
     public int counterTime = 0;
@@ -84,6 +84,7 @@ public class Main extends JPanel implements Runnable {
         ui = new UI(this, player, cp);
         timeL = new TimeLeft(this);
     }
+    
 
     public void update() {
         if (gameOver) return;
@@ -126,11 +127,12 @@ public class Main extends JPanel implements Runnable {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 char currentChar = grid[i][j];
-
+                	
                 // for fire dance spell
                 boolean isAroundPlayer = Math.abs(playerX - j) <= 1 && Math.abs(playerY - i) <= 1;
                 
                 if (currentChar == ',' && isAroundPlayer && transformCommas) {
+                	
                     g.setColor(Color.ORANGE);
                     currentChar = '~'; 
                 } else {
@@ -158,6 +160,9 @@ public class Main extends JPanel implements Runnable {
                             break;
                         case 'V':
                         	g.setColor(cp.LIGHT_PURPLE_COLOR(255));
+                            break;
+                        case 'F':
+                        	g.setColor(cp.CYAN_COLOR(255));
                             break;
                     }
                 }
