@@ -1,6 +1,6 @@
 <h1>Tiny Cemetery</h1>
 
-<img src="[image_url_placeholder](https://cdn.discordapp.com/attachments/645719590097125398/1288173600213303317/image.png?ex=66f438a7&is=66f2e727&hm=2e1064382f3442c33430706f188f5e4f15e8d2c39163e793262ea4cf09ab802a&)" alt="Project Preview" width="600">
+<img src="https://cdn.discordapp.com/attachments/645719590097125398/1288173600213303317/image.png?ex=66f438a7&is=66f2e727&hm=2e1064382f3442c33430706f188f5e4f15e8d2c39163e793262ea4cf09ab802a" alt="Project Preview" width="600">
 
 <h3>Known Bugs:</h3>
 <ul>
