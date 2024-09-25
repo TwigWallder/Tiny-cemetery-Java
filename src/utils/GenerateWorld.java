@@ -62,7 +62,7 @@ public class GenerateWorld {
             int y = rand.nextInt(m.height - 2) + 1;
             
             // safe zone
-        	if(x > 10 && y > 10) {
+        	if(Math.abs(m.playerX - x) > 5 || Math.abs(m.playerY - y) > 5) {
                  
               // Randomly generate a type of mob
                  int mobType = rand.nextInt(4);  

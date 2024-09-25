@@ -11,6 +11,8 @@ public class Mob {
 	public int x, y;
     public int moveTimer = 0;
     public int moveTimer2 = 0;
+    public int attackTimer = 0;
+    public int attackInterval = 100;
     public char mobChar = 'M';
     public Color mobColor = Color.orange;
     public int moveInterval = 50;
@@ -30,7 +32,7 @@ public class Mob {
     }
     
     public void update() {
-    	int nummob = 0;
+        int nummob = 0;
         // Utilisation de l'iterator pour éviter ConcurrentModificationException 
         Iterator<Mob> iterator = mobs.iterator();
         
@@ -40,10 +42,17 @@ public class Mob {
             m.mobLeft = nummob;
             mob.moveTowardsPlayer(m.playerX, m.playerY, m.grid);
             
+            // Incrémenter le timer d'attaque
+            mob.attackTimer++;
+
+            // Vérifier la proximité du joueur et l'intervalle entre les attaques
             if (!m.isInvincible && Math.abs(mob.x - m.playerX) <= 1 && Math.abs(mob.y - m.playerY) <= 1) {
-                mob.attacking();
-                m.isInvincible = true;
-                m.invincibilityTimer = m.INVINCIBILITY_DURATION;
+                if (mob.attackTimer >= mob.attackInterval) {
+                    mob.attacking();
+                    mob.attackTimer = 0; 
+                    m.isInvincible = true;
+                    m.invincibilityTimer = m.INVINCIBILITY_DURATION;
+                }
             }
             
             m.grid[mob.y][mob.x] = mob.mobChar;
@@ -51,7 +60,7 @@ public class Mob {
             if (mob.hp <= 0) {
                 // Utilisation de l'iterator pour la suppression
                 iterator.remove();
-                m.xp += rand.nextInt(mobGiveXp-5)+5;
+                m.xp += rand.nextInt(mobGiveXp)+5;
             }
         }
     }
@@ -79,14 +88,13 @@ public class Mob {
         int gridDown = grid[y + 1][x];
         int gridUp = grid[y - 1][x];
         
-        if (x < playerX - 1 && gridRight != '#' && gridRight != 'M') {
+        if (x < playerX - 1 && gridRight != '#' && gridRight != 'V') {
             x++;
-        } else if (x > playerX + 1 && gridLeft != '#' && gridLeft != 'M') {
+        } else if (x > playerX + 1 && gridLeft != '#' && gridLeft != 'V') {
             x--;
-        } 
-        if (y < playerY - 1 && gridDown != '#' && gridDown != 'M') {
+        } else if (y < playerY - 1 && gridDown != '#' && gridDown != 'V') {
             y++;
-        } else if (y > playerY + 1 && gridUp != '#' && gridUp != 'M') {
+        } else if (y > playerY + 1 && gridUp != '#' && gridUp != 'V') {
             y--;
         }
     }

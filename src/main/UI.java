@@ -38,7 +38,7 @@ public class UI {
         // Mob information
         int mobInfoOffset = 150;
         g.setColor(cp.PURPLE_COLOR(255));
-        g.drawString("Mob:", uiStartX, uiStartY + mobInfoOffset + 30);
+        g.drawString("Mob: no target", uiStartX, uiStartY + mobInfoOffset + 30);
         g.drawString("HP: " , uiStartX, uiStartY + mobInfoOffset + 60);
         g.drawString("State: ", uiStartX, uiStartY + mobInfoOffset + 90);
         g.setColor(cp.WHITE_COLOR(255));
@@ -57,6 +57,9 @@ public class UI {
         int logOffset = 420;
         g.setColor(cp.YELLOW_COLOR(255));
         g.drawString("|Log|" , uiStartX + 100, uiStartY + logOffset + 30);
+        g.drawString("> You reached level 2 !" , uiStartX + 5, uiStartY + logOffset + 140);
+
+        g.drawString("> _" , uiStartX + 5, uiStartY + logOffset + 170);
         g.setColor(Color.white);
         g.drawRect(uiStartX - 5, uiStartY + logOffset, 300, 185);
 
@@ -98,9 +101,9 @@ public class UI {
             g.setColor(cp.YELLOW_COLOR(255));
             g.drawString("| NAME |    | COST |     | INPUT |", uiStartX/10 + 5, uiStartY + 40);
             g.drawString("Fire Dance    (10)         [A]", uiStartX / 10 + 5, uiStartY + 70);
-            g.drawString("FireBall      (20)         [R]", uiStartX / 10 + 5, uiStartY + 100);
-            g.drawString("Ice Pick      (25)         [I]", uiStartX / 10 + 5, uiStartY + 130);
-            g.drawString("Explosion     (100)        [T]", uiStartX / 10 + 5, uiStartY + 160);
+            g.drawString("Meteor        (20)         [Z]", uiStartX / 10 + 5, uiStartY + 100);
+            g.drawString("Fire Wall     (35)         [E]", uiStartX / 10 + 5, uiStartY + 130);
+            g.drawString("Explosion     (100)        [R]", uiStartX / 10 + 5, uiStartY + 160);
             g.drawString("=================================", (uiStartX/10+ 5), uiStartY + 190);
             
             // INFORMATION

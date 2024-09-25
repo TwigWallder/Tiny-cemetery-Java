@@ -27,16 +27,16 @@ public class InputHandler extends KeyAdapter {
         int gridUp = m.grid[m.playerY - 1][m.playerX];
         LogsMessage lm = new LogsMessage();
         int key = e.getKeyCode();
-        if (key == KeyEvent.VK_LEFT && m.playerX > 1 && gridLeft != '#' && gridLeft != 'M') {
+        if (key == KeyEvent.VK_LEFT && m.playerX > 1 && gridLeft != '#') {
             m.playerX--;
         }
-        if (key == KeyEvent.VK_RIGHT && m.playerX < m.width - 2 && gridRight != '#' && gridRight != 'M') {
+        if (key == KeyEvent.VK_RIGHT && m.playerX < m.width - 2 && gridRight != '#' ) {
             m.playerX++;
         }
-        if (key == KeyEvent.VK_UP && m.playerY > 1 && gridUp != '#' && gridUp != 'M') {
+        if (key == KeyEvent.VK_UP && m.playerY > 1 && gridUp != '#') {
             m.playerY--;
         }
-        if (key == KeyEvent.VK_DOWN && m.playerY < m.height - 2 && gridDown != '#' && gridDown != 'M') {
+        if (key == KeyEvent.VK_DOWN && m.playerY < m.height - 2 && gridDown != '#') {
             m.playerY++;
         }
         if (key == KeyEvent.VK_P && !ui.pause) {
@@ -73,6 +73,8 @@ public class InputHandler extends KeyAdapter {
         if (key == KeyEvent.VK_G) {
             player.maxHealth = 999999;
             player.health = player.maxHealth;
+            player.maxMana = 999999;
+            player.mana = player.maxMana;
         }
         if (key == KeyEvent.VK_M) {
             player.mana = Math.max(player.mana - 5, 0);
@@ -81,26 +83,58 @@ public class InputHandler extends KeyAdapter {
             m.xp = Math.max(m.xp + 5, 0);
         }
 
+        // SPELL 
+        
         // fire dance attack
-        if (key == KeyEvent.VK_A) {
-            if (player.mana >= 5) {
-                player.attackMonster(0);
-                player.mana -= 5;
-            }
+        if(player.mana > 10) {
+        	if (key == KeyEvent.VK_A) {
+                if (player.mana >= 10) {
+                    player.fireDance(0);
+                    player.mana -= 10;
+                }
 
-            // for fire dance spell
-            m.transformCommas = true;
-            m.transformStartTime = System.currentTimeMillis();
+                // for fire dance spell
+                m.animationFD = true;
+                m.animationFDTime = System.currentTimeMillis();
+            }
+        }
+              
+        // meteor attack
+        if(player.mana > 20) {
+        	if (key == KeyEvent.VK_Z) {
+            	if(player.mana >= 20) {
+            		player.meteor(5);
+            		player.mana -= 20;
+            	}
+                m.animationM = true;
+                m.animationMTime = System.currentTimeMillis();
+            }
+        }
+               
+        // FireWall attack
+        if(player.mana > 35) {
+        	if (key == KeyEvent.VK_E) {
+            	if(player.mana >= 35) {
+            		player.fireWall(3);
+            		player.mana -= 35;
+            	}
+                m.animationFW = true;
+                m.animationFWTime = System.currentTimeMillis();
+            }
         }
         
-        // fire ball attack
-        if (key == KeyEvent.VK_R) {
-        	if(player.mana >= 20) {
-        		player.attackMonster(5);
-        		player.mana -= 20;
-        	}
+        // explosion attack
+        if(player.mana > 100) {
+            if (key == KeyEvent.VK_R) {
+            	if(player.mana >= 100) {
+            		player.explosion(10);
+            		player.mana -= 100;
+            		player.health /= 2;
+            	}
+                m.animationE = true;
+                m.animationETime = System.currentTimeMillis();
+            }
         }
-        	
 
         if (player.attributPoint > 0) {
             switch (key) {

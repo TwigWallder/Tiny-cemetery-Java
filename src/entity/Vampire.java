@@ -25,7 +25,7 @@ public class Vampire extends Mob {
         int result = rand.nextInt(m.mobDamage + 3) - player.defense; 
         if (result >= 0) {
             player.health -= result;
-            this.hp += result / 2;
+            this.hp += result / 3;
         } else {
         	// if attack miss
             player.health--;

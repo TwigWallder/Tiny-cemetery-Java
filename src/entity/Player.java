@@ -1,6 +1,7 @@
 package entity;
 
 import main.Main;
+import utils.LogsMessage;
 
 public class Player {
 
@@ -78,14 +79,44 @@ public class Player {
         }
     }
     
-    public void attackMonster(int damage) {
+    // ATTACK
+    public void fireDance(int damage) {
         for (int i = 0; i < mob.mobs.size(); i++) {
             Mob mob1 = mob.mobs.get(i);
             if (Math.abs(mob1.x - m.playerX) <= 1 && Math.abs(mob1.y - m.playerY) <= 1) {
             	mob1.hp -= attack + damage;
+            	LogsMessage.log("Le joueur a attaqué un mob avec Fire Dance infligeant " + (attack + damage) + " points de dégâts.");
             }
         }
     }
     
+    public void meteor(int damage) {
+        for (int i = 0; i < mob.mobs.size(); i++) {
+            Mob mob1 = mob.mobs.get(i);
+            if (Math.abs(mob1.x - m.playerX) <= 3 && Math.abs(mob1.y - m.playerY) <= 3) {
+            	mob1.hp -= attack + damage;
+            	LogsMessage.log("Le joueur a attaqué un mob avec Meteor infligeant " + (attack + damage) + " points de dégâts.");
+            }
+        }
+    }
     
+    public void fireWall(int damage) {
+        for (int i = 0; i < mob.mobs.size(); i++) {
+            Mob mob1 = mob.mobs.get(i);
+            if (Math.abs(mob1.y - m.playerY) <= 1){
+            	mob1.hp -= attack + damage;
+            	LogsMessage.log("Le joueur a attaqué un mob avec Fire Wall infligeant " + (attack + damage) + " points de dégâts.");
+            }
+        }
+    }
+    
+    public void explosion(int damage) {
+        for (int i = 0; i < mob.mobs.size(); i++) {
+            Mob mob1 = mob.mobs.get(i);
+            if (Math.cos(mob1.x - m.playerX) <= 100) {
+            	mob1.hp -= attack + damage;
+            	LogsMessage.log("Le joueur a attaqué un mob avec Explosion infligeant " + (attack + damage) + " points de dégâts.");
+            }
+        }
+    }
 }

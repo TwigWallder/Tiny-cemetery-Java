@@ -13,7 +13,7 @@ créer un log system
 afficher les stats du mob qu'on aggro en premier
 
 
-// MODIFICATION IMPORTANTE (:sob:)
+// MODIFICATION IMPORTANTE (mais pas sûr de le faire)
 Créer une map un shop et un monde a exploré juste a exploré et parlé a des pnj
 tu peu rentrer dans le cimetiere et a la fin de la vague de monstre tu as
 30s pour sortir du ciemetre sinon une nouvelle vague apparait

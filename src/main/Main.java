@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,9 +23,10 @@ public class Main extends JPanel implements Runnable {
     public final int SCREEN_HEIGHT = 720;
     public char[][] grid;
 
+    Random randPlayer = new Random();
     // Stats player
-    public int playerX = 1;
-    public int playerY = 1;
+    public int playerX = randPlayer.nextInt(width-5)+1;
+    public int playerY = randPlayer.nextInt(height-5)+1;
     public int xp = 0;
 
     // Floor & info
@@ -44,10 +46,22 @@ public class Main extends JPanel implements Runnable {
     public int invincibilityTimer = 0;
     public static final int INVINCIBILITY_DURATION = 30;
 
-    // Transformation variables
-    public boolean transformCommas = false;
-    public long transformStartTime = 0;
-    public static final long TRANSFORM_DURATION = 250; 
+    // animation
+    public boolean animationFD = false;
+    public long animationFDTime = 0;
+    public static final long ANIMATION_FD = 500; 
+    
+    public boolean animationM = false;
+    public long animationMTime = 0;
+    public static final long ANIMATION_M = 500; 
+    
+    public boolean animationFW = false;
+    public long animationFWTime = 0;
+    public static final long ANIMATION_FW = 500; 
+    
+    public boolean animationE = false;
+    public long animationETime = 0;
+    public static final long ANIMATION_E = 500; 
 
     // Game state
     private boolean running = true;
@@ -95,8 +109,23 @@ public class Main extends JPanel implements Runnable {
         mob.update();
 
         // for fire dance timer
-        if (transformCommas && System.currentTimeMillis() - transformStartTime > TRANSFORM_DURATION) {
-            transformCommas = false;
+        if (animationFD && System.currentTimeMillis() - animationFDTime > ANIMATION_FD) {
+        	animationFD = false;
+        }
+        
+        // Meteor timer
+        if (animationM && System.currentTimeMillis() - animationMTime > ANIMATION_M) {
+        	animationM = false;
+        }
+        
+        // fire wall timer
+        if (animationFW && System.currentTimeMillis() - animationFWTime > ANIMATION_FW) {
+        	animationFW = false;
+        }
+        
+        // explosion timer
+        if (animationE && System.currentTimeMillis() - animationETime > ANIMATION_E) {
+        	animationE = false;
         }
 
         // Game over triggers
@@ -115,6 +144,7 @@ public class Main extends JPanel implements Runnable {
 
     // Debug
     public int scale = 2;
+    
 
     public void render(Graphics g) {
         g.setFont(new Font("Monospaced", Font.PLAIN, 20));
@@ -127,42 +157,70 @@ public class Main extends JPanel implements Runnable {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 char currentChar = grid[i][j];
+                
+                // LIGHT EFFECT
+                int radius = 8;
+                boolean darknessArea = ((playerX - j) * (playerX - j) + (playerY - i) * (playerY - i) <= radius * radius);
+                radius = 3;
+                boolean lightArea = ((playerX - j) * (playerX - j) + (playerY - i) * (playerY - i) <= radius * radius);
+                int levelLight = 15;
+                
+                if(darknessArea) {
+                	levelLight = 100;
+                }
+                if(lightArea) {
+                	levelLight = 255;
+                }
                 	
                 // for fire dance spell
-                boolean isAroundPlayer = Math.abs(playerX - j) <= 1 && Math.abs(playerY - i) <= 1;
+                boolean patternFD = Math.abs(playerX - j) <= 1 && Math.abs(playerY - i) <= 1;
+                boolean patternM = Math.abs(playerX - j) <= 3 && Math.abs(playerY - i) <= 3;
+                boolean patternFW = Math.abs(playerY - i) <= 1;
+                boolean patternE = Math.abs(playerX - j) <= 100;
                 
-                if (currentChar == ',' && isAroundPlayer && transformCommas) {
-                	
-                    g.setColor(Color.ORANGE);
+                // FD animation
+                if (currentChar == ',' && patternFD && animationFD) {
+                    g.setColor(cp.RED_COLOR(255));
                     currentChar = '~'; 
-                } else {
+                } else if (currentChar == ',' && patternM && animationM){
+                    // meteo animation
+                	g.setColor(cp.RED_COLOR(255));
+                    currentChar = '¤'; 
+                } else if (currentChar == ',' && patternFW && animationFW){
+                	 // FW animation
+                	g.setColor(cp.RED_COLOR(255));
+                	currentChar = '-'; 
+                } else if (currentChar == ',' && patternE && animationE) {
+                	g.setColor(cp.RED_COLOR(255));
+                	currentChar = '¤';
+                }else {
                     switch (currentChar) {
                         case '|':
-                        	g.setColor(cp.PURPLE_COLOR(255));
+                        	g.setColor(cp.PURPLE_COLOR(levelLight));
                             break;
                         case '#':
-                            g.setColor(cp.WHITE_COLOR(255));
+                            g.setColor(cp.WHITE_COLOR(levelLight));
                             break;
                         case ',':
-                            g.setColor(cp.TURQUOISE_COLOR(255));
+                            g.setColor(cp.TURQUOISE_COLOR(levelLight));
                             break;
                         case '@':
-                            g.setColor(isInvincible ? cp.WHITE_COLOR(255) : cp.YELLOW_COLOR(255));
+                            g.setColor(isInvincible ? cp.WHITE_COLOR(levelLight) : cp.YELLOW_COLOR(levelLight));
                             break;
                         case 'M':
                             g.setColor(Color.RED);
                             break;
                         case 'S':
-                            g.setColor(cp.PINK_COLOR(255));
+                            g.setColor(cp.PINK_COLOR(levelLight));
                             break;
                         case 'Z':
-                            g.setColor(cp.RED_COLOR(255));
+                            g.setColor(cp.RED_COLOR(levelLight));
                             break;
                         case 'V':
-                        	g.setColor(cp.LIGHT_PURPLE_COLOR(255));
+                        	g.setColor(cp.LIGHT_PURPLE_COLOR(levelLight));
                             break;
                         case 'F':
-                        	g.setColor(cp.CYAN_COLOR(255));
+                        	g.setColor(cp.CYAN_COLOR(levelLight));
                             break;
                     }
                 }
@@ -176,11 +234,11 @@ public class Main extends JPanel implements Runnable {
         ui.drawUI(g);
         for (int i = 0; i < SCREEN_HEIGHT; i += 2) {
             // Ligne balayage
-        	if (isInvincible && status) {
+        	if (isInvincible && status && !gameOver) {
         		g.setColor(cp.RED_COLOR(100));
 
                 g.setFont(new Font("Monospaced", Font.BOLD, 32));
-        		g.drawString("You are being attacked /!\\", SCREEN_WIDTH/2  - 300, SCREEN_HEIGHT/2);
+        		g.drawString("You are being attacked /!\\", SCREEN_WIDTH/2  - 300, SCREEN_HEIGHT/2 + 200);
             } else {
             	g.setColor(new Color(0,0,0,50));
             }

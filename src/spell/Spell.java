@@ -25,7 +25,7 @@ public class Spell {
 
         spells.add(new Spell(m, 1, "Fire Dance", 10, 10));      
         spells.add(new Spell(m, 2, "Fireball", 50, 20));    
-        spells.add(new Spell(m, 3, "Ice Pick", 35, 25));   
+        spells.add(new Spell(m, 3, "Fire Wall", 35, 25));   
         spells.add(new Spell(m, 4, "Explosion", 200, 100)); 
 
         return spells;
