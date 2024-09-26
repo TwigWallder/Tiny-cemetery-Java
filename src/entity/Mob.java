@@ -107,10 +107,6 @@ public class Mob {
     	} else {
     		player.health --;
     	}
-        if (player.health <= 0) {
-        	player.health = 0;
-        	m.gameOver = true;
-        }
     }
     
 }

@@ -23,7 +23,7 @@ public class UI {
 	
 	public void drawUI(Graphics g) {
 		g.setFont(new Font("Monospaced", Font.BOLD, 20));
-        int uiStartX = m.width * 20 + 100;
+        int uiStartX = m.camWidth * 20 + 100;
         int uiStartY = 40;
 
         barre(uiStartX, uiStartY, "HP: ", cp.RED_COLOR(255), player.health, player.maxHealth, g);
@@ -79,7 +79,7 @@ public class UI {
         g.drawRect(uiStartX - 5, uiStartY - 5, 300, 130);
         if(m.status) { 
         	g.setColor(cp.DARK_PURPLE_COLOR(255));
-        	g.fillRect(0, 0, m.width * 50, m.height * 50);
+        	g.fillRect(0, 0, m.camWidth * 50, m.camHeight * 50);
             
            
             g.setColor(cp.WHITE_COLOR(255));
@@ -129,7 +129,7 @@ public class UI {
         // PAUSE
         if(pause) {
         	g.setColor(cp.DARK_PURPLE_COLOR(255));
-            g.fillRect(m.getWidth() / 2 - 130, m.getHeight() / 2 - 55, m.width*5 - 5, m.height*3 - 5);
+            g.fillRect(m.getWidth() / 2 - 130, m.getHeight() / 2 - 55, m.camWidth*5 - 5, m.camHeight*3 - 5);
             g.setColor(cp.YELLOW_COLOR(255));
 
             g.drawString("Tips: Are you winning son?", 50, (m.getHeight() - 90) + m.yOffset);
@@ -142,7 +142,7 @@ public class UI {
         // GAME OVER
         if (m.gameOver) {
             g.setColor(cp.DARK_PURPLE_COLOR(255));
-            g.fillRect(0, 0, m.width * 50, m.height * 50);
+            g.fillRect(0, 0, m.camWidth * 50, m.camHeight * 50);
             g.setColor(cp.RED_COLOR(255));
             g.setFont(new Font("Monospaced", Font.BOLD, 40));
             g.drawString("GAME OVER", m.getWidth() / 2 - 100, m.getHeight() / 2);

@@ -18,16 +18,21 @@ import utils.TimeLeft;
 
 public class Main extends JPanel implements Runnable {
     private static final long serialVersionUID = 1L;
-    public final int width = 40;
-    public final int height = 30;
+    
+    // Taille de la carte agrandie
+    public final int width = 100;   // Anciennement 40
+    public final int height = 100;  // Anciennement 30
+    
+    // Taille de l'écran
     public final int SCREEN_WIDTH = 1280;
     public final int SCREEN_HEIGHT = 720;
+    
     public char[][] grid;
 
     Random randPlayer = new Random();
     // Stats player
-    public int playerX = randPlayer.nextInt(width-5)+1;
-    public int playerY = randPlayer.nextInt(height-5)+1;
+    public int playerX = randPlayer.nextInt(width - 5) + 1;
+    public int playerY = randPlayer.nextInt(height - 5) + 1;
     public int xp = 0;
 
     // Floor & info
@@ -56,6 +61,12 @@ public class Main extends JPanel implements Runnable {
     public int scale = 2;
     public int yOffset = 35;
 
+    // Variables de caméra
+    public int camX = 0;
+    public int camY = 0;
+    public final int camWidth = 40;   // Largeur de la caméra (nombre de cellules)
+    public final int camHeight = 30;  // Hauteur de la caméra (nombre de cellules)
+
     private UI ui;
     private TimeLeft timeL;
     private GenerateWorld gw;
@@ -75,8 +86,8 @@ public class Main extends JPanel implements Runnable {
     }
 
     public void init() {
-    	as = new AnimationSpell(this);
-    	cp = new ColorPerso();
+        as = new AnimationSpell(this);
+        cp = new ColorPerso();
         grid = new char[height][width];
         mob = new Mob(0, 0, this, player);
         player = new Player(this, mob);
@@ -86,10 +97,13 @@ public class Main extends JPanel implements Runnable {
         ui = new UI(this, player, cp);
         timeL = new TimeLeft(this);
     }
-    
 
     public void update() {
         if (gameOver) return;
+
+        // Mise à jour de la position de la caméra pour suivre le joueur
+        camX = Math.max(0, Math.min(playerX - camWidth / 2, width - camWidth));
+        camY = Math.max(0, Math.min(playerY - camHeight / 2, height - camHeight));
 
         gw.fillEmptyGrid();
         timeL.getTimer();
@@ -97,13 +111,18 @@ public class Main extends JPanel implements Runnable {
         mob.update();
         as.update();
 
+        if (player.health <= 0) {
+            player.health = 0;
+            gameOver = true;
+        }
+
         // Game over triggers
-        if (timeL.getTimer() == 0)  gameOver = true;
+        if (timeL.getTimer() == 0) gameOver = true;
 
         // Next floor
         if (mob.mobs.size() == 0) gw.newFloor();
     }
-    
+
     public void render(Graphics g) {
         g.setFont(new Font("Monospaced", Font.PLAIN, 20));
         
@@ -111,44 +130,43 @@ public class Main extends JPanel implements Runnable {
         g.fillRect(0, 0, getWidth(), getHeight());
 
         int gridXOffset = 50;
-        
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+
+        // Dessiner seulement la portion visible par la caméra
+        for (int i = camY; i < camY + camHeight; i++) {
+            for (int j = camX; j < camX + camWidth; j++) {
                 char currentChar = grid[i][j];
-                
-                // LIGHT EFFECT
+
+                // Effets de lumière
                 int radius = 8;
                 boolean darknessArea = ((playerX - j) * (playerX - j) + (playerY - i) * (playerY - i) <= radius * radius);
                 radius = 3;
                 boolean lightArea = ((playerX - j) * (playerX - j) + (playerY - i) * (playerY - i) <= radius * radius);
                 int levelLight = 15;
-                
-                if(darknessArea) {
-                	levelLight = 100;
+
+                if (darknessArea) {
+                    levelLight = 100;
                 }
-                if(lightArea) {
-                	levelLight = 255;
+                if (lightArea) {
+                    levelLight = 255;
                 }
-                
-                // FD animation
+
+                // Animation des cases spécifiques
                 if (currentChar == ',' && as.getAnimation(0, i, j) && as.animationFD) {
                     g.setColor(cp.RED_COLOR(255));
                     currentChar = '~'; 
-                } else if (currentChar == ',' && as.getAnimation(1, i, j) && as.animationM){
-                    // meteo animation
-                	g.setColor(cp.RED_COLOR(255));
+                } else if (currentChar == ',' && as.getAnimation(1, i, j) && as.animationM) {
+                    g.setColor(cp.RED_COLOR(255));
                     currentChar = '¤'; 
-                } else if (currentChar == ',' && as.getAnimation(2, i, j) && as.animationFW){
-                	 // FW animation
-                	g.setColor(cp.RED_COLOR(255));
-                	currentChar = '-'; 
+                } else if (currentChar == ',' && as.getAnimation(2, i, j) && as.animationFW) {
+                    g.setColor(cp.RED_COLOR(255));
+                    currentChar = '-'; 
                 } else if (currentChar == ',' && as.getAnimation(3, i, j) && as.animationE) {
-                	g.setColor(cp.RED_COLOR(255));
-                	currentChar = '¤';
-                }else {
+                    g.setColor(cp.RED_COLOR(255));
+                    currentChar = '¤';
+                } else {
                     switch (currentChar) {
                         case '|':
-                        	g.setColor(cp.PURPLE_COLOR(levelLight));
+                            g.setColor(cp.PURPLE_COLOR(levelLight));
                             break;
                         case '#':
                             g.setColor(cp.WHITE_COLOR(levelLight));
@@ -159,9 +177,6 @@ public class Main extends JPanel implements Runnable {
                         case '@':
                             g.setColor(isInvincible ? cp.WHITE_COLOR(levelLight) : cp.YELLOW_COLOR(levelLight));
                             break;
-                        case 'M':
-                            g.setColor(Color.RED);
-                            break;
                         case 'S':
                             g.setColor(cp.PINK_COLOR(levelLight));
                             break;
@@ -169,36 +184,35 @@ public class Main extends JPanel implements Runnable {
                             g.setColor(cp.RED_COLOR(levelLight));
                             break;
                         case 'V':
-                        	g.setColor(cp.LIGHT_PURPLE_COLOR(levelLight));
+                            g.setColor(cp.LIGHT_PURPLE_COLOR(levelLight));
                             break;
                         case 'F':
-                        	g.setColor(cp.CYAN_COLOR(levelLight));
+                            g.setColor(cp.CYAN_COLOR(levelLight));
                             break;
                     }
                 }
 
                 // Appliquer l'effet de décalage
                 int xOffset = (int) (Math.sin(System.currentTimeMillis() * 0.001 + j * 0.1) * scale);
-                g.drawString(String.valueOf(currentChar), gridXOffset + j * 20 + xOffset, ((i + 1) * 20) + yOffset);
+                g.drawString(String.valueOf(currentChar), gridXOffset + (j - camX) * 20 + xOffset, ((i - camY + 1) * 20) + yOffset);
             }
         }
 
         ui.drawUI(g);
+
         for (int i = 0; i < SCREEN_HEIGHT; i += 2) {
             // Ligne balayage
-        	if (isInvincible && status && !gameOver) {
-        		g.setColor(cp.RED_COLOR(100));
-
+            if (isInvincible && status && !gameOver) {
+                g.setColor(cp.RED_COLOR(100));
                 g.setFont(new Font("Monospaced", Font.BOLD, 32));
-        		g.drawString("You are being attacked /!\\", SCREEN_WIDTH/2  - 300, SCREEN_HEIGHT/2 + 200);
+                g.drawString("You are being attacked /!\\", SCREEN_WIDTH / 2 - 300, SCREEN_HEIGHT / 2 + 200);
             } else {
-            	g.setColor(new Color(0,0,0,50));
+                g.setColor(new Color(0, 0, 0, 50));
             }
             
             g.drawLine(0, i, SCREEN_WIDTH, i);
         }
     }
-
 
     @Override
     public void paintComponent(Graphics g) {
