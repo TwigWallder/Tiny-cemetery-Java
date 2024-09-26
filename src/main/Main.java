@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import entity.Mob;
 import entity.Player;
+import spell.AnimationSpell;
 import utils.ColorPerso;
 import utils.GenerateWorld;
 import utils.TimeLeft;
@@ -46,48 +47,35 @@ public class Main extends JPanel implements Runnable {
     public int invincibilityTimer = 0;
     public static final int INVINCIBILITY_DURATION = 30;
 
-    // animation
-    public boolean animationFD = false;
-    public long animationFDTime = 0;
-    public static final long ANIMATION_FD = 500; 
-    
-    public boolean animationM = false;
-    public long animationMTime = 0;
-    public static final long ANIMATION_M = 500; 
-    
-    public boolean animationFW = false;
-    public long animationFWTime = 0;
-    public static final long ANIMATION_FW = 500; 
-    
-    public boolean animationE = false;
-    public long animationETime = 0;
-    public static final long ANIMATION_E = 500; 
-
     // Game state
     private boolean running = true;
     public boolean gameOver = false;
     public boolean status = false;
 
+    // Debug
+    public int scale = 2;
     public int yOffset = 35;
 
     private UI ui;
     private TimeLeft timeL;
     private GenerateWorld gw;
     private Player player;
-    private Mob mob;
+    public Mob mob;
     private ColorPerso cp;
+    private AnimationSpell as;
 
     public Main() {
         init();
         setFocusable(true);
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        addKeyListener(new InputHandler(this, player, ui));
+        addKeyListener(new InputHandler(this, player, ui, as));
 
         Thread gameThread = new Thread(this);
         gameThread.start();
     }
 
     public void init() {
+    	as = new AnimationSpell(this);
     	cp = new ColorPerso();
         grid = new char[height][width];
         mob = new Mob(0, 0, this, player);
@@ -107,45 +95,15 @@ public class Main extends JPanel implements Runnable {
         timeL.getTimer();
         player.update();
         mob.update();
-
-        // for fire dance timer
-        if (animationFD && System.currentTimeMillis() - animationFDTime > ANIMATION_FD) {
-        	animationFD = false;
-        }
-        
-        // Meteor timer
-        if (animationM && System.currentTimeMillis() - animationMTime > ANIMATION_M) {
-        	animationM = false;
-        }
-        
-        // fire wall timer
-        if (animationFW && System.currentTimeMillis() - animationFWTime > ANIMATION_FW) {
-        	animationFW = false;
-        }
-        
-        // explosion timer
-        if (animationE && System.currentTimeMillis() - animationETime > ANIMATION_E) {
-        	animationE = false;
-        }
+        as.update();
 
         // Game over triggers
-        if (player.health <= 0) {
-            gameOver = true;
-        }
-        if (timeL.getTimer() == 0) {
-            gameOver = true;
-        }
+        if (timeL.getTimer() == 0)  gameOver = true;
 
         // Next floor
-        if (mob.mobs.size() == 0) {
-            gw.newFloor();  
-        }
+        if (mob.mobs.size() == 0) gw.newFloor();
     }
-
-    // Debug
-    public int scale = 2;
     
-
     public void render(Graphics g) {
         g.setFont(new Font("Monospaced", Font.PLAIN, 20));
         
@@ -171,26 +129,20 @@ public class Main extends JPanel implements Runnable {
                 if(lightArea) {
                 	levelLight = 255;
                 }
-                	
-                // for fire dance spell
-                boolean patternFD = Math.abs(playerX - j) <= 1 && Math.abs(playerY - i) <= 1;
-                boolean patternM = Math.abs(playerX - j) <= 3 && Math.abs(playerY - i) <= 3;
-                boolean patternFW = Math.abs(playerY - i) <= 1;
-                boolean patternE = Math.abs(playerX - j) <= 100;
                 
                 // FD animation
-                if (currentChar == ',' && patternFD && animationFD) {
+                if (currentChar == ',' && as.getAnimation(0, i, j) && as.animationFD) {
                     g.setColor(cp.RED_COLOR(255));
                     currentChar = '~'; 
-                } else if (currentChar == ',' && patternM && animationM){
+                } else if (currentChar == ',' && as.getAnimation(1, i, j) && as.animationM){
                     // meteo animation
                 	g.setColor(cp.RED_COLOR(255));
                     currentChar = '¤'; 
-                } else if (currentChar == ',' && patternFW && animationFW){
+                } else if (currentChar == ',' && as.getAnimation(2, i, j) && as.animationFW){
                 	 // FW animation
                 	g.setColor(cp.RED_COLOR(255));
                 	currentChar = '-'; 
-                } else if (currentChar == ',' && patternE && animationE) {
+                } else if (currentChar == ',' && as.getAnimation(3, i, j) && as.animationE) {
                 	g.setColor(cp.RED_COLOR(255));
                 	currentChar = '¤';
                 }else {

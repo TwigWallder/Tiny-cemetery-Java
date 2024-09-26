@@ -4,23 +4,26 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import entity.Player;
+import spell.AnimationSpell;
 import utils.LogsMessage;
 
 public class InputHandler extends KeyAdapter {
     Main m;
     Player player;
     UI ui;
+    AnimationSpell as;
 
-    public InputHandler(Main m, Player player, UI ui) {
+    public InputHandler(Main m, Player player, UI ui, AnimationSpell as) {
         this.m = m;
         this.player = player;
         this.ui = ui;
+        this.as = as;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
         if (m.gameOver) return;
-
+        // A LAIDE C TROP POUR MOI AAAAAAh
         int gridRight = m.grid[m.playerY][m.playerX + 1];
         int gridLeft = m.grid[m.playerY][m.playerX - 1];
         int gridDown = m.grid[m.playerY + 1][m.playerX];
@@ -88,51 +91,42 @@ public class InputHandler extends KeyAdapter {
         // fire dance attack
         if(player.mana > 10) {
         	if (key == KeyEvent.VK_A) {
-                if (player.mana >= 10) {
                     player.fireDance(0);
                     player.mana -= 10;
-                }
-
                 // for fire dance spell
-                m.animationFD = true;
-                m.animationFDTime = System.currentTimeMillis();
+                as.animationFD = true;
+                as.animationFDTime = System.currentTimeMillis();
             }
         }
               
         // meteor attack
         if(player.mana > 20) {
         	if (key == KeyEvent.VK_Z) {
-            	if(player.mana >= 20) {
             		player.meteor(5);
             		player.mana -= 20;
-            	}
-                m.animationM = true;
-                m.animationMTime = System.currentTimeMillis();
+                as.animationM = true;
+                as.animationMTime = System.currentTimeMillis();
             }
         }
                
         // FireWall attack
         if(player.mana > 35) {
         	if (key == KeyEvent.VK_E) {
-            	if(player.mana >= 35) {
             		player.fireWall(3);
             		player.mana -= 35;
-            	}
-                m.animationFW = true;
-                m.animationFWTime = System.currentTimeMillis();
+                as.animationFW = true;
+                as.animationFWTime = System.currentTimeMillis();
             }
         }
         
         // explosion attack
         if(player.mana > 100) {
             if (key == KeyEvent.VK_R) {
-            	if(player.mana >= 100) {
             		player.explosion(10);
             		player.mana -= 100;
             		player.health /= 2;
-            	}
-                m.animationE = true;
-                m.animationETime = System.currentTimeMillis();
+                as.animationE = true;
+                as.animationETime = System.currentTimeMillis();
             }
         }
 

@@ -36,7 +36,7 @@ public class Player {
                 m.isInvincible = false;
             }
         }
-
+        // a faire (ou pas)
         if (mana <= 0) {
             mana = 0;
         }

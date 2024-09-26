@@ -99,7 +99,7 @@ public class Mob {
         }
     }
     
-    public void attacking() {
+    public void attacking() { 
     	Random rand = new Random();
     	int result = rand.nextInt(m.mobDamage) - player.defense;
     	if(result >= 0) {
@@ -107,6 +107,10 @@ public class Mob {
     	} else {
     		player.health --;
     	}
+        if (player.health <= 0) {
+        	player.health = 0;
+        	m.gameOver = true;
+        }
     }
     
 }
